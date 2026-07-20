@@ -1,6 +1,13 @@
 # my-skills
 
-Canonical copy of my user-level Claude Code skills (`~/.claude/skills`).
+**The single source of truth for my Claude Code skills.** Both agent skill
+directories are symlinks into this repo — edit here, and the change is live
+everywhere immediately.
+
+```
+~/.claude/skills  ->  ~/Projects/my-skills/.claude/skills
+~/.agents/skills  ->  ~/Projects/my-skills/.claude/skills
+```
 
 ## Structure
 
@@ -20,19 +27,27 @@ Claude project — open it and every skill here is live:
 Same layout `copy-user-skills` writes into any consumer repo, so a skill
 directory can be copied straight across with no rewriting.
 
-## Syncing
+## Adding or editing a skill
 
-Refresh this repo from `~/.claude/skills`:
+Edit files in `.claude/skills/` directly, then commit. There is no sync step —
+the symlinks mean `~/.claude/skills` and `~/.agents/skills` already point at
+these files.
 
-```sh
-bash ~/.claude/skills/copy-user-skills/scripts/sync-skills.sh apply --on-existing=overwrite
+`copy-user-skills` still has a role, but a different one: it copies these skills
+*into another project's* `.claude/skills` so they work in Claude cloud/web code,
+which can't see local user skills.
+
+## Restoring
+
+The pre-symlink directories are preserved as:
+
+```
+~/.claude/skills.bak-2026-07-20
+~/.agents/skills.bak-2026-07-20
 ```
 
-Notes on the sync script:
+Delete them once you're satisfied the symlink setup is behaving. Not carried
+over from those backups, deliberately:
 
-- It skips `copy-user-skills` itself (it excludes its own directory), so that
-  one is maintained here by hand.
-- It only picks up directories containing a `SKILL.md`, so `~/.claude/skills/Archive`
-  and stray `.zip` files are ignored.
-- It dereferences symlinks (`cp -RL`), so skills symlinked from `~/.agents/skills`
-  land here as real files.
+- `Archive/` + `Archive.zip` — stale duplicates of skills already here.
+- `my-skill/` — an empty directory, never a real skill.
