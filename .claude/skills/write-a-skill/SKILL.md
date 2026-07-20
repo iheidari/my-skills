@@ -5,6 +5,21 @@ description: Create new agent skills with proper structure, progressive disclosu
 
 # Writing Skills
 
+## Where skills live
+
+**Always create the skill in `~/Projects/my-skills/.claude/skills/<skill-name>/`**, no
+matter which project the request comes from. That repo is the single source of
+truth: `~/.claude/skills` and `~/.agents/skills` are symlinks into it, so writing
+there makes the skill live everywhere immediately.
+
+- Never write a new skill into the current project's `.claude/skills/` — even if
+  the request happens while working in another repo.
+- The only exception is an explicit instruction to put it somewhere else (e.g.
+  "add this skill to this repo only"). Confirm before deviating.
+- To make a skill available to Claude cloud/web in a consumer repo, use the
+  `copy-user-skills` skill to copy it across — don't author it there.
+- After writing, commit in `~/Projects/my-skills` and offer to push.
+
 ## Process
 
 1. **Gather requirements** - ask user about:
