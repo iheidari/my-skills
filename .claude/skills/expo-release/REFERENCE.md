@@ -37,7 +37,7 @@ what patch versions are for. Run the skill again with the patch version.
 ## Squash-merge re-tag
 
 The main flow auto-merges the PR (squash) and only tags **after** the merge lands on
-`main` (SKILL step 6), so this is normally a non-issue. Use this only as a recovery
+`main` (SKILL step 8), so this is normally a non-issue. Use this only as a recovery
 path — if a tag ever ended up on the branch commit instead of the squash-merge commit,
 retarget it after the merge lands:
 
@@ -52,13 +52,19 @@ gh release edit mobile-v<version> --target main
 
 ## EAS / store notes
 
-- `eas.json` uses `appVersionSource: "remote"`, so EAS reads the version from its
-  servers at build time. The local `set-version.mjs` bump drives the repo + CHANGELOG,
-  not necessarily the binary. To push the version remotely:
-  `npx eas build:version:set --platform <platform>`.
+- `eas.json` uses `appVersionSource: "local"` + `production.autoIncrement`, so the SemVer
+  `version` comes from `app.json` (the local `set-version.mjs` bump) and EAS bumps only the
+  native build version (`ios.buildNumber` / `android.versionCode`) **in `app.json` on disk**
+  at build time. That on-disk build-number change is what SKILL step 6 commits onto the
+  release branch before the PR — so the PR carries both the SemVer bump and the build-number
+  bump. Because the source is local, there's no `build:version:set` remote push to make.
 - The `release-notes/<version>.md` file is the copy you paste into **App Store Connect**
-  ("What's New in This Version") and the **Play Console** ("Release notes"). EAS submit
-  does not upload it for you.
+  ("What's New in This Version"). EAS submit does not upload it for you.
+- **Android release notes are automated.** The skill also writes the same copy (≤ 500 chars)
+  to `fastlane/metadata/android/en-US/changelogs/default.txt`; push it to the **Play Console**
+  after the AAB is submitted with `/usr/bin/ruby /usr/local/bin/fastlane android metadata`.
+  It's keyed as `default.txt` rather than `<versionCode>.txt` because EAS autoincrements the
+  version code at build time, and `supply` applies `default.txt` to whatever code is promoted.
 - The default build profile is `production`; `--clear-cache` forces a clean native build
   (avoids stale prebuilt frameworks baking a mismatched native module — e.g. an Expo
   dyld launch crash). Drop it for a faster, cached build.
