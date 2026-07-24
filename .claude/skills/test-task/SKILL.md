@@ -29,11 +29,16 @@ Fetch the target PR's fields with
   - **On the default branch** (`main`/`master`): pick **the next open PR** —
     `gh pr list --state open --json number,updatedAt`, take the most recently updated — and
     go ahead. **No confirmation.** If there are no open PRs, say so and stop.
-  - **On a feature branch with a PR**: use that branch's PR (`gh pr view` with no arg).
+  - **On a feature branch with an open PR**: use that branch's PR (`gh pr view` with no arg).
+  - **On a feature branch whose PR is already merged/closed**: don't retest it. Say so and
+    fall through to **the next open PR** (as in the default-branch case above), no
+    confirmation.
   - **On a feature branch that never had a PR**: **stop**, tell the user this branch has no
     PR, and ask what to do (test a specific PR? switch to main and take the next one?). This
     ask happens only here — never when the user is on the default branch.
-- If the PR is closed/merged, note it but continue (testing a merged PR is valid).
+- When a PR is named explicitly (argument given), a closed/merged state is fine — note it and
+  continue (retesting a merged PR on request is valid). The skip-merged rule above applies
+  only to the no-argument, current-branch case.
 
 ### 2. Check out the PR branch & resolve conflicts
 
