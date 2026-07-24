@@ -1,6 +1,6 @@
 ---
 name: test-task
-description: Test a pull request against its own "How to test" instructions. Resolves a PR (an explicit number/URL, or the one for the current branch), reads the "How to test" section from the PR body, turns it into a checklist, then runs every step it can automate (install deps, typecheck, lint, unit tests, build) and reports which items passed, which failed, and which the user must verify by hand (device/UI/visual). Use when the user runs /test-task [PR], or says "test this PR", "test the task", or "run the how-to-test steps".
+description: Test a pull request against its own "How to test" instructions. Resolves a PR (an explicit number/URL, the current branch's PR, or — on main — the next open PR), checks out its branch, resolves any merge conflicts, reads the "How to test" section from the PR body, turns it into a checklist, then runs every step it can automate (install deps, typecheck, lint, unit tests, build) and reports which items passed, which failed, and which the user must verify by hand (device/UI/visual). Use when the user runs /test-task [PR], or says "test this PR", "test the task", or "run the how-to-test steps".
 disable-model-invocation: true
 ---
 
@@ -11,7 +11,9 @@ description. Automate everything that can be automated, then hand the user a cle
 checklist of what's confirmed and what still needs a human.
 
 The skill argument is optional: a PR number (`/test-task 46`), a PR URL, or empty
-(`/test-task`) to use the PR for the current branch.
+(`/test-task`). With no argument it uses the current branch's PR — or, when you're on the
+default branch, the next open PR. It then checks out that PR's branch and resolves any
+conflicts before testing, pausing only if your current branch has uncommitted changes.
 
 Requires the `gh` CLI.
 
@@ -19,13 +21,36 @@ Requires the `gh` CLI.
 
 ### 1. Resolve the PR
 
-- **Argument given** (number or URL): `gh pr view <arg> --json number,title,body,headRefName,url,state`.
-- **No argument**: resolve the PR for the current branch with `gh pr view --json number,title,body,headRefName,url,state`.
-  - If `gh` reports no PR for this branch, **stop** and tell the user: no PR found for the
-    current branch — pass a PR number or push/open a PR first. Do not guess.
+Fetch the target PR's fields with
+`gh pr view <target> --json number,title,body,headRefName,baseRefName,url,state,mergeable,mergeStateStatus`.
+
+- **Argument given** (number or URL): the target is that PR. Go ahead — no confirmation.
+- **No argument**: branch on where the user is (`git rev-parse --abbrev-ref HEAD`):
+  - **On the default branch** (`main`/`master`): pick **the next open PR** —
+    `gh pr list --state open --json number,updatedAt`, take the most recently updated — and
+    go ahead. **No confirmation.** If there are no open PRs, say so and stop.
+  - **On a feature branch with a PR**: use that branch's PR (`gh pr view` with no arg).
+  - **On a feature branch that never had a PR**: **stop**, tell the user this branch has no
+    PR, and ask what to do (test a specific PR? switch to main and take the next one?). This
+    ask happens only here — never when the user is on the default branch.
 - If the PR is closed/merged, note it but continue (testing a merged PR is valid).
 
-### 2. Extract the "How to test" section
+### 2. Check out the PR branch & resolve conflicts
+
+Get the working tree onto the PR's code:
+
+- If already on `headRefName`, skip the checkout.
+- Otherwise, **the only thing that pauses this skill**: if the current branch has uncommitted
+  changes (`git status --porcelain` is non-empty), **stop** and tell the user to commit or
+  stash first. With a clean tree, check out the PR **automatically, no confirmation** —
+  `gh pr checkout <number>` (falls back to fetching `headRefName`).
+- **Resolve conflicts if the PR has any.** If `mergeable` is `CONFLICTING` (or a local merge
+  of `baseRefName` conflicts), merge the base branch in and resolve — invoke the
+  `resolving-merge-conflicts` skill via the Skill tool if available. **Inform the user that
+  you're resolving conflicts and proceed — do not wait for confirmation.** Once resolved,
+  continue to testing.
+
+### 3. Extract the "How to test" section
 
 From the PR `body`, find the section whose heading matches **how to test** (case-insensitive;
 also accept "Testing", "Test plan", "QA", "How to verify"). Take everything from that heading
@@ -35,7 +60,7 @@ until the next heading or end of body.
   section — nothing to build a checklist from. Show the available headings so the user can
   point you at the right one.
 
-### 3. Build the checklist
+### 4. Build the checklist
 
 Turn each testable step into a checklist item. Classify each item as one of:
 
@@ -48,10 +73,9 @@ Turn each testable step into a checklist item. Classify each item as one of:
 
 Show the classified checklist **before** running anything, so the user sees the plan.
 
-### 4. Run the automatable items
+### 5. Run the automatable items
 
-First make sure the working tree is on the PR's branch (or its checked-out code) — if the
-current branch isn't `headRefName`, tell the user and ask before switching. Then:
+The working tree is already on the PR branch (Step 2). Then:
 
 - **Detect the package manager** from lockfiles (`pnpm-lock.yaml` → pnpm, `package-lock.json`
   → npm, `yarn.lock` → yarn) or the repo's `CLAUDE.md`. Honor project conventions — e.g. this
@@ -67,7 +91,7 @@ current branch isn't `headRefName`, tell the user and ask before switching. Then
 Do not fix failures here. This skill *tests*; it reports what it finds. If a check fails,
 capture the failure and move on to the next item.
 
-### 5. Report
+### 6. Report
 
 Present the final checklist grouped into three buckets:
 
