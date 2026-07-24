@@ -27,8 +27,8 @@ Fetch the target PR's fields with
 - **Argument given** (number or URL): the target is that PR. Go ahead — no confirmation.
 - **No argument**: branch on where the user is (`git rev-parse --abbrev-ref HEAD`):
   - **On the default branch** (`main`/`master`): pick **the next open PR** —
-    `gh pr list --state open --json number,updatedAt`, take the most recently updated — and
-    go ahead. **No confirmation.** If there are no open PRs, say so and stop.
+    `gh pr list --state open --json number,createdAt`, take the **oldest** (earliest
+    `createdAt`) — and go ahead. **No confirmation.** If there are no open PRs, say so and stop.
   - **On a feature branch with an open PR**: use that branch's PR (`gh pr view` with no arg).
   - **On a feature branch whose PR is already merged/closed**: don't retest it. Say so and
     fall through to **the next open PR** (as in the default-branch case above), no
