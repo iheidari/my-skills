@@ -1,14 +1,14 @@
 ---
 name: expo-release
-description: Cut a release for the Expo / React Native mobile app — pick the platform and version, generate the store "what's new" notes, update CHANGELOG.md, and create the release branch + git tag + GitHub release. Use when the user wants to release, ship, or cut a new mobile / Expo version, bump the app version, prepare release notes, or runs expo-release. Replaces the manual build.sh release flow.
+description: Cut a release for the Expo / React Native mobile app — pre-flight the store review rules for the target platform, pick the platform and version, generate the store "what's new" notes, update CHANGELOG.md, and create the release branch + git tag + GitHub release. Use when the user wants to release, ship, or cut a new mobile / Expo version, bump the app version, prepare release notes, or runs expo-release. Replaces the manual build.sh release flow.
 ---
 
 # expo-release
 
-Orchestrates a mobile release end-to-end: **platform → version → notes → branch →
-commit → EAS build (bumps `app.json`) → commit → auto-merged PR → tag**. The helper
-scripts handle the deterministic parts (version discovery, file patching); you curate
-the human-readable notes.
+Orchestrates a mobile release end-to-end: **platform → store-review gate → version →
+notes → branch → commit → EAS build (bumps `app.json`) → commit → auto-merged PR →
+tag**. The helper scripts handle the deterministic parts (version discovery, file
+patching); you curate the human-readable notes.
 
 This skill runs the whole flow without stopping for approval at the build or merge
 steps: it **always triggers** the EAS build **before** the PR — the production build's
@@ -16,10 +16,15 @@ steps: it **always triggers** the EAS build **before** the PR — the production
 `app.json`, which is committed onto the release branch so the PR carries it — then
 **auto-merges** the release PR, printing the build link(s).
 
+The **one** place it does stop is the store-review gate in step 2: anything that could
+get the build rejected halts the release before a single file is touched, and the user
+decides what happens next.
+
 ## Inputs (args, else ask)
 
 - **platform** — `ios` | `android` | `all`. If not given, ask with `AskUserQuestion`.
-- **version** — SemVer like `2.1.0`. If not given, recommend one (see step 2) and ask.
+  Resolve this **first** — it selects which review check gates the release (step 2).
+- **version** — SemVer like `2.1.0`. If not given, recommend one (see step 3) and ask.
 
 ## Workflow
 
@@ -29,13 +34,56 @@ Run everything from the **repo root**. Let `SK=~/.claude/skills/expo-release`.
    `origin/main` (`git fetch -q origin main` then compare). If on another branch, out
    of sync, or the tree is dirty, **warn and ask before continuing** — don't abort silently.
 
-2. **Resolve version.** Run `node "$SK/scripts/release-info.mjs"` → JSON with `current`,
+2. **Store-review pre-flight gate (blocking).** Before touching a single file, audit the
+   release against the store review rules for the platform(s) being shipped — in a
+   **subagent** — and wait for the verdict:
+
+   | platform | check to run |
+   |---|---|
+   | `ios` | `app-store-review-check` |
+   | `android` | `google-play-review-check` |
+   | `all` | **both** |
+
+   Launch each with the `Agent` tool (`subagent_type: general-purpose`,
+   `run_in_background: false` so the release blocks on it). For `all`, put **both** Agent
+   calls in a **single message** so they run concurrently, and don't continue until both
+   have reported. Tell each agent to invoke its skill via the `Skill` tool against **this
+   repo at HEAD** — repo root, `app.json` / `app.config.ts`, the store metadata under
+   `<appDir>/fastlane/metadata/`, the privacy/permission config, and the release copy for
+   this version if it exists — write its full report to the scratchpad, and **return**: the
+   overall verdict (Ready / Fix-before-submit / Not ready), the blocker and risk counts, the
+   report path, and one line per non-Pass finding (guideline/policy number, verdict,
+   `file:line`, fix). Don't re-audit or downgrade what comes back — the checks own their
+   calibration.
+
+   **Then gate on the result.** Continue automatically **only** when every finding is
+   **Pass**. On any **Likely rejection**, **At risk**, or **Needs info** finding, **stop
+   the release before any mutation** (no notes, no version bump, no branch, no build),
+   show the findings worst-first, and ask with `AskUserQuestion`:
+
+   - **Stop and fix the findings first (Recommended)** — end this release run; fixes land
+     as their own PRs and the release is re-run afterwards.
+   - **Fix them now, then continue** — apply the fixes in this session, then **re-run this
+     step from scratch** (a fresh audit, not a re-read of the old report).
+   - **Proceed anyway** — explicit override only. Record it in the release PR body
+     (verdict, blocker count, report path, and that the user waived it) so the decision
+     stays traceable.
+
+   For `all`, a split result (one platform clean, the other not) is its own question: offer
+   **releasing only the clean platform** alongside those options, and if the user takes it,
+   narrow `platform` for the rest of the flow — which also drops the Play `default.txt`
+   output in step 4 when Android is the platform dropped.
+
+   A check that **couldn't run** (skill missing, subagent error, no findings returned) is
+   not a Pass — report that and ask before continuing.
+
+3. **Resolve version.** Run `node "$SK/scripts/release-info.mjs"` → JSON with `current`,
    `lastTag`, `suggested`, `suggestedBump`, and `commits[]` (subjects since the last tag).
    If the user passed a version, use it. Otherwise ask with `AskUserQuestion`, listing
    `suggested` **first** as "(Recommended)" with the bump reason, plus the other two
    bump levels. If `current`'s tag already exists, see [REFERENCE.md](REFERENCE.md) (amend vs. patch).
 
-3. **Write the notes** from `commits[]`. Three outputs (curate — don't dump raw subjects):
+4. **Write the notes** from `commits[]`. Three outputs (curate — don't dump raw subjects):
    - **`<appDir>/CHANGELOG.md`** — prepend a `## [<version>] - <today>` section in
      Keep a Changelog style (Added / Changed / Fixed / Moderation & Security), each
      line ending with its `(#NN)` PR number.
@@ -53,18 +101,18 @@ Run everything from the **repo root**. Let `SK=~/.claude/skills/expo-release`.
      release is cut; `supply` applies `default.txt` to whatever code is promoted. This is
      the Play analogue of pasting release-notes into App Store Connect — the iOS side has
      no such repo file because `deliver` reads `release-notes/<version>.md` at upload time.
-     After the build is submitted (step 6), push it with
+     After the build is submitted (step 7), push it with
      `/usr/bin/ruby /usr/local/bin/fastlane android metadata` (see the fastlane note below).
 
-4. **Bump the version.** `node "$SK/scripts/set-version.mjs" <version>` (patches
+5. **Bump the version.** `node "$SK/scripts/set-version.mjs" <version>` (patches
    `package.json` + `app.config.ts`).
 
-5. **Branch + commit the bump & notes.** Branch `release/mobile-<version>` and commit the
-   version bump (step 4) + notes (step 3). Commit message: summarize the release and end
+6. **Branch + commit the bump & notes.** Branch `release/mobile-<version>` and commit the
+   version bump (step 5) + notes (step 4). Commit message: summarize the release and end
    with the `Co-Authored-By` trailer (per repo conventions). **Do not push, create the PR,
-   or merge yet** — the build in step 6 still has to add its commit to this branch first.
+   or merge yet** — the build in step 7 still has to add its commit to this branch first.
 
-6. **Run the build (always), then commit the build-version bump.** Do **not** just hand
+7. **Run the build (always), then commit the build-version bump.** Do **not** just hand
    off — kick off the EAS build for the chosen platform from `<appDir>`:
    `npx eas build --platform <platform> --profile production --clear-cache --non-interactive`.
    Run it in the background so the session isn't blocked, and once EAS has queued the
@@ -75,21 +123,21 @@ Run everything from the **repo root**. Let `SK=~/.claude/skills/expo-release`.
    Because `eas.json` is `appVersionSource: "local"` + `production.autoIncrement`, EAS
    **rewrites `app.json` on disk** early in the build — bumping `ios.buildNumber` and/or
    `android.versionCode` (the native build version, distinct from the SemVer `version`
-   from step 4). This increment lands before the cloud build finishes, so **don't wait
+   from step 5). This increment lands before the cloud build finishes, so **don't wait
    for the build to complete**: watch the working tree (`git status --porcelain app.json`)
    until `app.json` shows the change, then **commit it onto the same release branch** with
    a message like `build: increment native build version for <version>` + the
    `Co-Authored-By` trailer. If nothing changes `app.json` (e.g. EAS didn't run, or the
    platform's field was untouched), skip this commit and say so — don't fabricate a bump.
 
-7. **Push, PR, auto-merge.** Now that the branch carries both the version/notes commit and
+8. **Push, PR, auto-merge.** Now that the branch carries both the version/notes commit and
    the build-version commit, push and `gh pr create` (base `main`). PR body: summarize the
    release and end with the Claude Code footer (per repo conventions). Then **auto-merge
    without asking** — `gh pr merge <#> --squash --delete-branch` (add `--auto` if branch
    protection requires checks to pass first; fall back to `--admin` only if the user has
    said they want to bypass). Report the merge; don't pause for approval.
 
-8. **Tag + GitHub release.** Because the PR is **squash-merged**, the branch commit isn't
+9. **Tag + GitHub release.** Because the PR is **squash-merged**, the branch commit isn't
    on `main` — first `git checkout main && git pull --ff-only origin main` so HEAD is the
    squash-merge commit, then tag `<tagPrefix><version>` (e.g. `mobile-v2.1.0`) on it, push
    the tag, and `gh release create <tag> --title ... --notes-file
@@ -103,8 +151,8 @@ Run everything from the **repo root**. Let `SK=~/.claude/skills/expo-release`.
   with `RELEASE_APP_DIR` / `RELEASE_TAG_PREFIX` env vars for another app.
 - `eas.json` here uses `appVersionSource: "local"` + `production.autoIncrement`, so EAS
   bumps the native build version (`ios.buildNumber` / `android.versionCode`) **in
-  `app.json` on disk** at build time — that's the change step 6 commits. The SemVer
-  `version` is still owned by the repo (the step-4 bump); only the build number is EAS's.
+  `app.json` on disk** at build time — that's the change step 7 commits. The SemVer
+  `version` is still owned by the repo (the step-5 bump); only the build number is EAS's.
 - Re-running for an **already-shipped** version is unsafe — steer to a patch instead.
   See [REFERENCE.md](REFERENCE.md).
 - **Play store listing** (Android) is pushed by fastlane `supply`, not EAS. EAS submit

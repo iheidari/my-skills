@@ -37,7 +37,7 @@ what patch versions are for. Run the skill again with the patch version.
 ## Squash-merge re-tag
 
 The main flow auto-merges the PR (squash) and only tags **after** the merge lands on
-`main` (SKILL step 8), so this is normally a non-issue. Use this only as a recovery
+`main` (SKILL step 9), so this is normally a non-issue. Use this only as a recovery
 path — if a tag ever ended up on the branch commit instead of the squash-merge commit,
 retarget it after the merge lands:
 
@@ -55,7 +55,7 @@ gh release edit mobile-v<version> --target main
 - `eas.json` uses `appVersionSource: "local"` + `production.autoIncrement`, so the SemVer
   `version` comes from `app.json` (the local `set-version.mjs` bump) and EAS bumps only the
   native build version (`ios.buildNumber` / `android.versionCode`) **in `app.json` on disk**
-  at build time. That on-disk build-number change is what SKILL step 6 commits onto the
+  at build time. That on-disk build-number change is what SKILL step 7 commits onto the
   release branch before the PR — so the PR carries both the SemVer bump and the build-number
   bump. Because the source is local, there's no `build:version:set` remote push to make.
 - The `release-notes/<version>.md` file is the copy you paste into **App Store Connect**
