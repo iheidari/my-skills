@@ -171,7 +171,19 @@ Not every guideline applies to every app. Skip cleanly and say why an area is N/
 **5.1 Privacy [NR]**
 - 5.1.1 **Data Collection and Storage**
   - (i) Privacy policy required (linked in ASC metadata and inside the app), stating what's collected, how, all uses; third-party protection parity; retention/deletion and how to revoke consent.
-  - (ii) Consent required for collecting user/usage data (even if anonymous). Paid functionality can't be gated on granting data access. Provide an easy way to withdraw consent. Purpose strings must fully describe the use.
+  - (ii) Consent required for collecting user/usage data (even if anonymous). Paid functionality can't be gated on granting data access. Provide an easy way to withdraw consent. **Purpose strings must fully describe the use — auto-scanned, see the dedicated rule below.**
+
+    > **5.1.1(ii) — Placeholder / insufficient purpose strings (READ THIS; auto-detected).**
+    > Apple runs an **automated** analysis of every submission for placeholder or insufficient usage description strings, and rejects before human review. The exact wording Apple sends:
+    > *"An automated analysis of the submission indicates the app includes placeholder or otherwise insufficient purpose strings, also called usage description strings. Purpose strings must clearly and completely describe your use of data."*
+    > Apple's own examples of strings that **fail**: *"App would like to access your Contacts"*, *"App needs microphone access"* — they name the resource but not the use.
+    >
+    > **A compliant string says (1) how the app uses the resource and (2) a specific example of what the data does.** Reject (Likely rejection) any string that is a framework/template default verbatim, restates the permission without a use, names the data but not the purpose, gives no concrete example, or is empty/lorem/TODO.
+    >
+    > - **Framework defaults are the highest-signal hit** — they ship in thousands of apps, so the scanner knows them. Real examples: `"This identifier will be used to deliver personalized ads to you."` (the expo-tracking-transparency doc example; a real 2026 rejection), `"Allow this app to collect app-related data that can be used for tracking you or your device."`, Xcode's `"Allow $(PRODUCT_NAME) to access your camera"`, and anything still containing a `$(PRODUCT_NAME)` token. **Copying a docs example is the single most common way this happens** — the string looks like a real sentence, which is exactly why it survives self-review.
+    > - **The other remedy is deletion.** Apple's message offers two fixes, and the second — remove the resource access *and* the string — is right whenever the string is orphaned: a leftover from a removed feature, a template, or a dependency's boilerplate. Cross-check each string against an actual API call; an unused purpose string is its own rejection trigger.
+    > - **How to audit in code — do NOT just grep `NS*UsageDescription`.** The `Info.plist` is generated and gitignored in most cross-platform projects, so a clean grep is a false Pass. Expo keeps these in `app.json`/`app.config.*` as `ios.infoPlist` **and** as per-plugin shorthand (`userTrackingPermission`, `cameraPermission`, `photosPermission`, `locationWhenInUsePermission`, …) that expands into plist keys at prebuild. Flutter uses `ios/Runner/Info.plist`, Capacitor `ios/App/App/Info.plist` or `config.xml`, native Xcode the target plist or `INFOPLIST_KEY_*` build settings. Where a built `ios/` exists locally, read the generated plist directly — it's what actually ships and catches strings injected by Pods or config plugins.
+    > - **This is a binary fix.** The string compiles into `Info.plist`, so it requires a rebuild and a new build number; it cannot be fixed by replying in Resolution Center or editing App Store Connect metadata.
   - (iii) Data minimization: request only data relevant to core functionality; prefer out-of-process pickers/share sheets over full Photos/Contacts access.
   - (iv) Respect permission settings; don't trick/force consent. Provide alternatives when consent is declined. **Pre-permission "priming" screens are heavily enforced and a top real-world rejection** — see the dedicated rule below.
 
@@ -225,12 +237,13 @@ When triaging, check these first — they account for the bulk of rejections:
 
 1. **2.1 Completeness** — crashes, bugs, broken links, no working demo account/login for the reviewer, backend off, IAP not functional.
 2. **2.3.x Accurate Metadata** — screenshots that don't show the app in use, undocumented features, misleading description/keywords, undisclosed IAP.
-3. **5.1.1 Privacy** — missing/invalid privacy policy link, vague purpose strings, no in-app account deletion when account creation exists.
-4. **5.1.1(iv) Permission priming** — a custom pre-permission dialog with a `Cancel`/`Not now`/dismiss path that lets the user avoid the system prompt (must always proceed to the OS prompt after the message). Auto-detected and frequently rejected; treat any pre-prompt gate with a decline path as a blocker.
-5. **5.1.2 ATT** — tracking without an App Tracking Transparency prompt; privacy "nutrition label" mismatch with actual behavior.
-6. **3.1.1 IAP** — unlocking digital content by a method other than IAP, or steering users to external payment where not permitted.
-7. **4.2 Minimum Functionality** — thin apps, repackaged websites, template-generated apps.
-8. **4.3 Spam** — duplicate/near-duplicate apps, saturated low-value categories.
-9. **2.5.1 Private APIs** — use of non-public APIs or frameworks used outside their intended purpose.
-10. **4.8 Login** — social login offered without an equivalent privacy-preserving option (e.g. Sign in with Apple).
-11. **1.5 / 5.1.1(i)** — no working support/contact path.
+3. **5.1.1 Privacy** — missing/invalid privacy policy link, no in-app account deletion when account creation exists.
+4. **5.1.1(ii) Purpose strings** — placeholder or insufficient usage descriptions: a framework/template default left verbatim, or a string that names the resource without saying how it's used and giving a specific example. **Caught by Apple's automated pre-review scan**, so it rejects before a human looks at the app. Remember the strings are usually *generated* (Expo plugin config, `app.config.*`) rather than sitting in a committed `Info.plist` — a clean `NS*UsageDescription` grep is not a Pass.
+5. **5.1.1(iv) Permission priming** — a custom pre-permission dialog with a `Cancel`/`Not now`/dismiss path that lets the user avoid the system prompt (must always proceed to the OS prompt after the message). Auto-detected and frequently rejected; treat any pre-prompt gate with a decline path as a blocker.
+6. **5.1.2 ATT** — tracking without an App Tracking Transparency prompt; privacy "nutrition label" mismatch with actual behavior.
+7. **3.1.1 IAP** — unlocking digital content by a method other than IAP, or steering users to external payment where not permitted.
+8. **4.2 Minimum Functionality** — thin apps, repackaged websites, template-generated apps.
+9. **4.3 Spam** — duplicate/near-duplicate apps, saturated low-value categories.
+10. **2.5.1 Private APIs** — use of non-public APIs or frameworks used outside their intended purpose.
+11. **4.8 Login** — social login offered without an equivalent privacy-preserving option (e.g. Sign in with Apple).
+12. **1.5 / 5.1.1(i)** — no working support/contact path.
