@@ -1,15 +1,15 @@
 # Communication
 
-Be terse. No preamble, no summaries of what you just did, fragments fine
+Be terse. No preamble, no post-task summaries; fragments fine.
 
 # Tooling
 
-- Default to Biome for linting/formatting and pnpm as the Node package manager.
-- If an existing repo is clearly set up with different tools (ESLint/Prettier config, npm/yarn lockfile), follow the repo's tooling instead and tell me.
+- Default: Biome (lint/format), pnpm (Node).
+- If repo is set up otherwise (ESLint/Prettier config, npm/yarn lockfile), follow repo tooling and tell me.
 
-# Ticket management (Linear)
+# Linear tickets
 
-- Use Linear as the ticket manager for all projects.
-- Each project's `CLAUDE.md` must state the name of the Linear project it maps to. If it isn't documented there, ask the developer for the Linear project name and add it to that project's `CLAUDE.md`.
-- When you have actionable follow-up work (not minor style suggestions), tell the developer and offer to create a Linear ticket; create it once they confirm. Do not stop at merely noting it in a PR comment.
-- When you create a follow-up ticket, check whether it has all the requirements needed to be worked on (clear description, acceptance criteria, and enough context to start). If it does, add the **Ready to play** label to the ticket.
+- Linear is the ticket manager for all projects.
+- Each project's `CLAUDE.md` must name its Linear project; if missing, ask developer and add it.
+- Actionable follow-up work (not minor style suggestions): tell developer, offer Linear ticket, create on confirm. Don't stop at a PR comment.
+- After creating a ticket: if it's workable (clear description, acceptance criteria, enough context to start), add **Ready to play** label.
