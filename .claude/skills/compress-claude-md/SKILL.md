@@ -1,5 +1,5 @@
 ---
-name: compress-memory
+name: compress-claude-md
 description: Compress CLAUDE.md and other always-loaded memory/rule files to minimize per-session input tokens while preserving every behavioral rule. Use when asked to compress, slim, audit, or optimize CLAUDE.md, rule files, or session context.
 ---
 
