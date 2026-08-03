@@ -1,6 +1,6 @@
 ---
 name: create-task
-description: Interview the user about a piece of work, file it as a fully-specified issue in the current repo's Linear project, then run it through review-task to size and mark it "ready to play" for implementation. Use when the user wants to create/file/add a task, or invokes /create-task.
+description: Interview the user about a piece of work, file it as a fully-specified issue in the current repo's Linear project, then run it through review-task to size and mark it "Ready to play" for implementation. Use when the user wants to create/file/add a task, or invokes /create-task.
 disable-model-invocation: true
 ---
 
@@ -11,7 +11,7 @@ every detail now.
 
 There is **one Linear project per repo** (e.g. this repo → its matching project). This skill's
 job is to resolve that project, interview until the work is fully specified, create the issue
-there, then hand it to **review-task** to size it and mark it **`"ready to play"`** — not to
+there, then hand it to **review-task** to size it and mark it **`"Ready to play"`** — not to
 write a file. It stops short of implementing the task.
 
 The user's starting idea is in the skill arguments (what they typed after `/create-task`).
@@ -24,9 +24,10 @@ Each repo maps to exactly one Linear project. Figure out which:
 2. List Linear projects (`mcp__claude_ai_Linear__list_projects`) and find the one whose name
    matches this repo. Match **loosely** — casing and separators differ (a `true-north-prep`
    repo maps to a `TrueNorthPrep` project; `milemark` → `Milemark`; `tubekeep` → `Tubekeep`).
-3. **Confirm before using it.** State the project you resolved ("Filing into Linear project
-   **X** — correct?") and let the user redirect. The repo→project mapping is a heuristic, so a
-   quick confirm is required, not optional.
+3. **Exactly one plausible match → proceed without asking.** State which project you resolved
+   ("Filing into Linear project **X**") so the user can redirect, and continue — the grilling
+   interview in Step 2 gives them plenty of chances to correct course. (Same policy as
+   review-task and do-task: silent on an exact match, ask otherwise.)
 4. **If you can't find a matching project, the match is ambiguous (several plausible), the
    project looks renamed, or you're otherwise not sure — STOP and ask the user which Linear
    project to file into.** Never guess silently, and never fall back to writing a task file.
@@ -105,17 +106,17 @@ already implementation-ready. Invoke the **review-task** skill (via the Skill to
 grooms that single issue, not the whole backlog. That pass will:
 - size the issue with a T-shirt `estimate`,
 - spin off any `"Dev Task"` sub-issues for manual developer-setup dependencies, and
-- apply the **`"ready to play"`** label once there are no open blocking questions — which is
+- apply the **`"Ready to play"`** label once there are no open blocking questions — which is
   what marks the issue ready to start implementing.
 
 Because Steps 1–5 already grilled the task to a cold-readable spec, review-task usually has no
 gaps left to resolve and mostly just sizes + labels it — but if it does surface an open
-question, resolve it live there. If review-task cannot reach `"ready to play"` (a blocking
+question, resolve it live there. If review-task cannot reach `"Ready to play"` (a blocking
 question was deferred), say so in Step 7 instead of claiming the task is ready.
 
 ## Step 7 — Confirm
 Show the created issue's **identifier, title, and URL** (from the `save_issue` result) plus a
 short summary of what you captured, its T-shirt size, any `"Dev Task"` sub-issues spun off in
-Step 6, and whether it reached the **`"ready to play"`** state. Do **not** start implementing
+Step 6, and whether it reached the **`"Ready to play"`** state. Do **not** start implementing
 the task — this skill only files and finalizes it. Mention the user can now say "do task
 <identifier>" (e.g. "do task ABC-42") to execute it.

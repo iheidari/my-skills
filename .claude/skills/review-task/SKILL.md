@@ -1,6 +1,6 @@
 ---
 name: review-task
-description: Groom a Linear backlog by reviewing each task for implementation-readiness, filling gaps, sizing, and labeling. Use when the user wants to review, groom, refine, or triage Linear tasks/issues/backlog, check if tasks are ready to implement, add estimates/shirt sizes, or runs review-task.
+description: Groom a Linear backlog by reviewing each task for implementation-readiness, filling gaps, sizing, and labeling — or groom a single issue when given its identifier. Use when the user wants to review, groom, refine, or triage Linear tasks/issues/backlog, check if tasks are ready to implement, add estimates/shirt sizes, or runs review-task (optionally with an issue identifier, e.g. "review-task ABC-42").
 ---
 
 # review-task
@@ -20,8 +20,18 @@ the Linear connector in claude.ai settings and stop.
 
 ## Workflow
 
-1. **Pick scope.** Resolve the target project in this order, and **only ask the user to confirm
-   scope when a step below explicitly says to**:
+1. **Pick scope.**
+
+   **Single issue** — if the argument or request names a specific issue identifier (e.g.
+   `review-task ABC-42`, or create-task handing off the issue it just filed): `get_issue` it and
+   groom **only that issue**. Skip project resolution and the queue fetch (the rest of this step
+   and step 2) — the issue itself pins the team/project. Run steps 3–7 on it regardless of its
+   current status or labels (an explicit ask overrides the skip-`"Ready to play"` rule — though
+   never *re-add* the label if present). Still confirm the `"Ready to play"` and `"Dev Task"`
+   labels exist (below). Then report on that one issue and stop — no sweep, no summary table.
+
+   **Backlog sweep** (no identifier given) — resolve the target project in this order, and **only
+   ask the user to confirm scope when a step below explicitly says to**:
    - If the user named a team/project, use it.
    - Otherwise, if the session is running inside a repo/project folder, infer the project from it
      (repo name / directory name, matched against `list_projects`) and **use it without asking**.
@@ -29,17 +39,17 @@ the Linear connector in claude.ai settings and stop.
      none or is ambiguous, fall through to the ask case below.
    - **Ask the user which to review (via `list_teams` / `list_projects`) only if:** (a) the
      session is not inside any repo/project folder, or (b) the inferred project has no reviewable
-     issues left — i.e. every Backlog/Todo issue already carries the `"ready to play"` label. In
+     issues left — i.e. every Backlog/Todo issue already carries the `"Ready to play"` label. In
      case (b), tell the user everything is already reviewed and ready before asking whether to
      pick a different scope.
 
-   Confirm the `"ready to play"` and `"Dev Task"` labels exist via `list_issue_labels`; if either
+   Confirm the `"Ready to play"` and `"Dev Task"` labels exist via `list_issue_labels`; if either
    is missing, create it with `create_issue_label`. (`"Dev Task"` tags the sub-issues you spin off
    in step 5 for manual developer setup.)
 
 2. **Fetch the queue.** `list_issues` filtered to the chosen team/project, **statuses Backlog +
    Todo only** (exclude In Progress / Done / Canceled), and **excluding issues that already carry
-   the `"ready to play"` label** — those are done, never re-review them. Sort by priority
+   the `"Ready to play"` label** — those are done, never re-review them. Sort by priority
    (Urgent → High → Medium → Low → None). Announce the count and the order.
 
 3. **Review each issue in priority order.** For each, read title + description (and
@@ -99,7 +109,7 @@ the Linear connector in claude.ai settings and stop.
    `get_issue` and confirming the estimate stuck as expected; if the team turns out to use a
    different scale, adjust before continuing.
 
-7. **Mark reviewed** — but only when the issue is actually ready. Add the `"ready to play"` label
+7. **Mark reviewed** — but only when the issue is actually ready. Add the `"Ready to play"` label
    via `save_issue`. Because you resolved the questions live in step 4, this normally happens
    before you move to the next issue. **Only apply it when there are no open blocking questions** —
    if the user deferred and you left a fallback comment, leave the label off so the issue
@@ -118,6 +128,10 @@ the Linear connector in claude.ai settings and stop.
 - Manual developer-setup dependencies (create an OAuth client, provision a database, get an API
   key) become `"Dev Task"`-labeled sub-issues of the current issue, each with what-to-do detail —
   don't bury them in the parent description.
-- Never label an issue `"ready to play"` while it still has unanswered blocking questions.
+- Never label an issue `"Ready to play"` while it still has unanswered blocking questions.
 - Editing a description means rewriting it to stand alone, not appending a Q&A transcript.
-- Idempotent: re-running skips anything already labeled `"ready to play"`.
+- Idempotent: re-running skips anything already labeled `"Ready to play"`.
+- Single-issue scope: an explicit identifier grooms exactly that issue (even if already labeled
+  or not in Backlog/Todo) and never triggers a sweep.
+- The label is exactly **`"Ready to play"`** (capital R) — match and create it with that exact
+  string; `create-task` and `do-task` use the same one.

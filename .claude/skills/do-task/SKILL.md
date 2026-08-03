@@ -66,8 +66,10 @@ Each repo maps to exactly one Linear project. Figure out which:
    (e.g. `git remote get-url origin`, or the working directory name).
 2. `mcp__claude_ai_Linear__list_projects` and find the project whose name matches this repo.
    Match **loosely** — casing/separators differ (`tubekeep` repo → `Tubekeep` project).
-3. If the match is ambiguous, the project looks renamed, or you're unsure, **stop and ask** which
-   Linear project to use. Never guess silently.
+3. **Exactly one plausible match → proceed without asking**, but state which project you resolved
+   so the user can redirect. If the match is ambiguous, the project looks renamed, or you're
+   unsure, **stop and ask** which Linear project to use. Never guess silently. (Same policy as
+   create-task and review-task: silent on an exact match, ask otherwise.)
 4. Derive the **team** from the resolved project (a project belongs to a team) — you'll need it
    for label and status lookups.
 
@@ -250,18 +252,29 @@ When it returns:
 - Commit (`refactor: simplify <identifier>`, same footer). If simplify changed nothing, say so and
   skip the commit.
 
-## Step 9 — Thermos review & fix findings (subagent)
+## Step 9 — Thermo reviews & fix findings (two parallel subagents)
 
-Only after Step 8 is committed — thermos reviews what actually ships.
+Only after Step 8 is committed — the reviewers review what actually ships.
 
-Run the **thermos** skill (`/thermos`) **in a subagent**, on the branch diff (vs `origin/main`).
-It launches the two thermo-nuclear reviewers (bug/security/breakage + code-quality) in parallel and
-synthesizes prioritized findings (P0 blocking → P3 nit).
+**Do not run the thermos skill inside a subagent.** Thermos works by spawning two subagents of
+its own, and subagents can't spawn subagents — the wrapper silently degrades into one context
+doing both reviews, which defeats the two-independent-reviewers design. Instead, do what thermos
+does yourself, from the main thread: launch **two subagents in a single message**, both scoped to
+the branch diff (vs `origin/main`):
 
-Have the subagent **report the findings without fixing them** — return the full list as
-`severity | file:line | one-line description`, nothing else. You apply the fixes in the main
-thread, because which findings get fixed vs. deferred is a judgment call that has to survive into
-the PR comment:
+- one running the **thermo-nuclear-review** skill — bugs, breakage, security, devex regressions,
+  feature-gate leaks;
+- one running the **thermo-nuclear-code-quality-review** skill — maintainability, structure,
+  file-size growth, abstraction quality.
+
+Give both the Step 7 common contract (read-only git, edit nothing — report only). Each must
+**report findings without fixing them** — return its list as
+`severity | file:line | one-line description`, nothing else. When both have returned, synthesize
+in the main thread: dedupe overlapping findings (weight them more heavily), resolve disagreements
+with your own judgment, and produce one prioritized list (P0 blocking → P3 nit).
+
+You apply the fixes in the main thread, because which findings get fixed vs. deferred is a
+judgment call that has to survive into the PR comment:
 
 - Fix **all P0 and P1** findings.
 - Fix **P2** findings that are easy; leave the rest noted.
