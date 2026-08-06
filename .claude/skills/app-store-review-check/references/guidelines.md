@@ -69,6 +69,22 @@ Not every guideline applies to every app. Skip cleanly and say why an area is N/
 **2.1 App Completeness**
 - (a) **[NR]** Submissions must be final. No placeholder text, dead URLs, empty sites. Tested on-device, no crashes/obvious bugs. Provide a **working demo account or built-in demo mode** if there's a login, and turn the backend on. **This is one of the most common rejection reasons.**
 - (b) IAPs must be complete, current, visible, and functional to the reviewer; explain missing ones in review notes.
+- **2.1 also covers "we couldn't find it."** App Review issues an *Information Needed* rejection whenever something the binary advertises can't be located on their device — most often a permission prompt the app links the framework for but never presents. See the callout below.
+
+  > **2.1 — "Unable to locate the [X] permission request" (READ THIS; the ATT case is common).**
+  > Apple can see which frameworks a binary links, so linking **AppTrackingTransparency** commits the app to actually showing the prompt. When it doesn't appear on the reviewer's device, the rejection lands under **2.1 Information Needed**, not 5.1.2. Real wording:
+  > *"The app uses the AppTrackingTransparency framework, but we are unable to locate the App Tracking Transparency permission request when reviewed on iPadOS 26.6."*
+  >
+  > The code is nearly always present and correct in isolation. Two failure classes, both invisible to source review and to CI:
+  >
+  > 1. **The prompt is gated.** It waits on a consent-SDK network call with no timeout (Google UMP's `requestInfoUpdate` hangs rather than rejects on a blocked/proxied network), on remote config or a feature flag, on entitlement state (`if (!isPro)`), on fonts/assets/hydration behind an early `return null`, or on the user navigating somewhere. Any of those not resolving is a launch that reaches the home screen having asked nothing. **Compliant shape: the ask is mounted unconditionally at launch and every other concern is downstream of it**; any unavoidable wait carries its own timeout.
+  > 2. **The prompt is asked but never presented.** iOS silently declines to present the ATT alert while the app is not foreground-`active` or while a view-controller transition is in flight — and `requestTrackingAuthorization` **resolves with the current status anyway**, reporting nothing about whether it drew. So dismissing a custom pre-prompt and requesting in the same tick races the dismissal animation. This is timing-dependent, hence **device-dependent**: it can present on iPhone every time and never on iPad, which is why Apple's message names a specific device. The only signal available is a status still `undetermined` after the call; code that ignores it can't tell asked from unasked.
+  >
+  > **Fix shape:** mount unconditionally; wait for the pre-prompt's dismissal to complete (`onDismiss` **plus** a timer fallback — the prop is iOS-only and unreliable); wait for `active`; re-ask on a still-`undetermined` result; restore a visible pre-prompt when attempts exhaust, so the ask is never silently abandoned.
+  >
+  > **Also supply the artifact Apple asks for:** a screen recording from a **physical** device showing launch from a fresh install (or after resetting tracking permissions), the prompt appearing before any tracking data is collected, and the flow after — pasted into **App Review Information → Notes**. The ATT answer is once per install and survives deleting the app; resetting means Settings → Privacy & Security → Tracking on device, or erasing the simulator.
+  >
+  > **Binary fix** — new build and build number. Not answerable in Resolution Center.
 
 **2.2 Beta Testing** — Demos/betas/trials belong on TestFlight, not the App Store.
 
@@ -201,7 +217,7 @@ Not every guideline applies to every app. Skip cleanly and say why an area is N/
   - (viii) No compiling personal info from sources other than directly from the user (even public databases).
   - (ix) Highly regulated fields (banking, health, gambling, cannabis, air travel, crypto exchange) must be submitted by the legal entity providing the service, not an individual.
 - 5.1.2 **Data Use and Sharing**
-  - (i) No using/sharing personal data without permission; disclose third-party (incl. third-party AI) sharing and get explicit consent. **App Tracking Transparency**: explicit permission via ATT API required to track. Can't require enabling notifications/location/tracking to use the app or get compensation.
+  - (i) No using/sharing personal data without permission; disclose third-party (incl. third-party AI) sharing and get explicit consent. **App Tracking Transparency**: explicit permission via ATT API required to track. Can't require enabling notifications/location/tracking to use the app or get compensation. Tracking SDKs must initialize **after** the ATT answer, never before it. *Having the ATT call in the codebase satisfies 5.1.2 but not 2.1* — if the prompt doesn't actually appear on the reviewer's device, the rejection comes back as **2.1 Information Needed**; see the 2.1 callout.
   - (ii) No repurposing data beyond the original consented purpose.
   - (iii) No building/reconstructing user profiles from "anonymized"/aggregated data.
   - (iv) Don't use Contacts/Photos to build a contact database or harvest installed-apps lists for analytics/ads.
@@ -236,14 +252,15 @@ Not every guideline applies to every app. Skip cleanly and say why an area is N/
 When triaging, check these first — they account for the bulk of rejections:
 
 1. **2.1 Completeness** — crashes, bugs, broken links, no working demo account/login for the reviewer, backend off, IAP not functional.
-2. **2.3.x Accurate Metadata** — screenshots that don't show the app in use, undocumented features, misleading description/keywords, undisclosed IAP.
-3. **5.1.1 Privacy** — missing/invalid privacy policy link, no in-app account deletion when account creation exists.
-4. **5.1.1(ii) Purpose strings** — placeholder or insufficient usage descriptions: a framework/template default left verbatim, or a string that names the resource without saying how it's used and giving a specific example. **Caught by Apple's automated pre-review scan**, so it rejects before a human looks at the app. Remember the strings are usually *generated* (Expo plugin config, `app.config.*`) rather than sitting in a committed `Info.plist` — a clean `NS*UsageDescription` grep is not a Pass.
-5. **5.1.1(iv) Permission priming** — a custom pre-permission dialog with a `Cancel`/`Not now`/dismiss path that lets the user avoid the system prompt (must always proceed to the OS prompt after the message). Auto-detected and frequently rejected; treat any pre-prompt gate with a decline path as a blocker.
-6. **5.1.2 ATT** — tracking without an App Tracking Transparency prompt; privacy "nutrition label" mismatch with actual behavior.
-7. **3.1.1 IAP** — unlocking digital content by a method other than IAP, or steering users to external payment where not permitted.
-8. **4.2 Minimum Functionality** — thin apps, repackaged websites, template-generated apps.
-9. **4.3 Spam** — duplicate/near-duplicate apps, saturated low-value categories.
-10. **2.5.1 Private APIs** — use of non-public APIs or frameworks used outside their intended purpose.
-11. **4.8 Login** — social login offered without an equivalent privacy-preserving option (e.g. Sign in with Apple).
-12. **1.5 / 5.1.1(i)** — no working support/contact path.
+2. **2.1 "Unable to locate the permission request"** — a prompt the binary's linked frameworks promise (ATT above all) that never presents on the reviewer's device: gated behind a hanging network call, an entitlement check, an asset-loading early return or optional navigation — or requested while the app isn't foreground-`active` or is mid-dismiss-animation, where iOS shows nothing and the API resolves successfully anyway. Device-dependent, and invisible to source review, type checks and CI alike. Ship the screen recording Apple asks for in App Review Information → Notes.
+3. **2.3.x Accurate Metadata** — screenshots that don't show the app in use, undocumented features, misleading description/keywords, undisclosed IAP.
+4. **5.1.1 Privacy** — missing/invalid privacy policy link, no in-app account deletion when account creation exists.
+5. **5.1.1(ii) Purpose strings** — placeholder or insufficient usage descriptions: a framework/template default left verbatim, or a string that names the resource without saying how it's used and giving a specific example. **Caught by Apple's automated pre-review scan**, so it rejects before a human looks at the app. Remember the strings are usually *generated* (Expo plugin config, `app.config.*`) rather than sitting in a committed `Info.plist` — a clean `NS*UsageDescription` grep is not a Pass.
+6. **5.1.1(iv) Permission priming** — a custom pre-permission dialog with a `Cancel`/`Not now`/dismiss path that lets the user avoid the system prompt (must always proceed to the OS prompt after the message). Auto-detected and frequently rejected; treat any pre-prompt gate with a decline path as a blocker.
+7. **5.1.2 ATT** — tracking without an App Tracking Transparency prompt; privacy "nutrition label" mismatch with actual behavior.
+8. **3.1.1 IAP** — unlocking digital content by a method other than IAP, or steering users to external payment where not permitted.
+9. **4.2 Minimum Functionality** — thin apps, repackaged websites, template-generated apps.
+10. **4.3 Spam** — duplicate/near-duplicate apps, saturated low-value categories.
+11. **2.5.1 Private APIs** — use of non-public APIs or frameworks used outside their intended purpose.
+12. **4.8 Login** — social login offered without an equivalent privacy-preserving option (e.g. Sign in with Apple).
+13. **1.5 / 5.1.1(i)** — no working support/contact path.

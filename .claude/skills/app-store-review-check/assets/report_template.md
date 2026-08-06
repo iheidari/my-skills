@@ -55,3 +55,17 @@ Ordered by severity — do the blockers first.
 
 Draft "Notes for Review" content that would help a real reviewer (demo account,
 explanation of the business model, how to reach gated features, licensing docs, etc.).
+
+Include, where they apply:
+
+- **Where each system permission prompt appears** and what triggers it — the exact
+  taps from a cold launch. A reviewer who can't find a prompt rejects under 2.1
+  rather than hunting for it.
+- **A screen recording from a physical device** for any app linking
+  AppTrackingTransparency: fresh install (or tracking permissions reset), the prompt
+  appearing before any tracking data is collected, and the flow that follows. Apple
+  asks for this by name on an ATT 2.1 rejection; supplying it up front pre-empts the
+  round-trip. Note that the prompt is once-per-install and is **not** reset by
+  deleting the app — say so in the notes, so a reviewer who already answered it on an
+  earlier build knows why they won't see it again.
+- **Any surface gated by purchase, entitlement, or region**, with how to reach it.
