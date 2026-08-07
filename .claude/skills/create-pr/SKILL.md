@@ -40,8 +40,9 @@ For this monorepo (pnpm + Biome) the commands are:
 
 ### 4. Thermos review
 
-Invoke the `thermos` skill via the Skill tool, scoped to the current branch's diff.
-Read its synthesized verdict and surface the highest-signal findings.
+Invoke the `thermos` skill via the Skill tool, scoped to the current branch's diff
+(pass the base ref). Read its verdict line — `BLOCKER` stops the pipeline, `FINDINGS`
+and `CLEAN` continue — and surface the highest-signal findings.
 
 ### Failure handling
 
