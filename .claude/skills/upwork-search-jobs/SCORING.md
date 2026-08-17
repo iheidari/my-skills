@@ -56,7 +56,10 @@ Score each input, then average with the weights shown. Missing input → drop it
 
 Hard caps regardless of the average:
 
-- Any `totalHired > 0` or `invitesSent > 0` → worth ≤ 3 (likely already gone)
+- `totalHired > 0` → worth ≤ 3 (the job is likely gone)
+- `invitesSent > 0` → subtract 1 (the client is shopping, not committed to the applicant pool)
+- The client's work history contradicts the budget → cap at 5, and say so. Two shapes to watch for: a client whose entire history is small design/admin gigs posting a five-figure build, and a high-hire-count client whose contracts are all $50–200 microgigs (a reseller, not a spender). Hire count alone is not spend.
+- `avgRateBid` far below the stated budget, or far above it → the market is repricing the job. Score money on the bids, not the budget, and name the gap.
 - `preferred_qualifications.min_job_success_score` set and Iman has no JSS yet → worth ≤ 6
 - Fixed budget under $1,500 → worth ≤ 5
 
