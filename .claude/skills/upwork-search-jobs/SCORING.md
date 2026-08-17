@@ -6,8 +6,10 @@ Three independent 1–10 scores plus a weighted `overall`. Score each dimension 
 
 Drop outright:
 
-- `engagement` is `30+ hrs/week`, or the post says full-time / part-time role / "join our team" / contract-to-hire
+- The post describes a role rather than a project — "join our team", contract-to-hire, ongoing headcount with no defined deliverable
 - Requires daily standups, fixed working hours, or heavy timezone overlap
+
+Weekly hours are **not** a filter. `engagement: 30+ hrs/week` is fine on its own — plenty of well-scoped project work is posted that way. Only drop it if the post is employment-shaped for one of the reasons above.
 - Fixed budget under $800, or a stated hourly range topping out under $45
 - Stack Iman doesn't work in: WordPress or Shopify theme work, pure design, pure ML research, Salesforce, SAP, .NET, legacy PHP, game engines
 - Fundamentally no-code automation (n8n / Make / Zapier) with no real engineering
@@ -32,13 +34,13 @@ Bonuses worth +1 each (cap at 10): existing codebase / previous dev left / somet
 
 ## Difficulty (1–10) — how hard to deliver, 10 hardest
 
-Judge scope × unknowns × compliance surface, at ~20 hrs/week capacity.
+Judge scope × unknowns × compliance surface. Rate the work itself, not how it fits a calendar.
 
 | Score | Meaning |
 |---|---|
-| 1–3 | Days of work. Bug fix, single integration, small feature on an existing app |
-| 4–6 | 2–5 weeks. A defined app or API build, known stack, clear spec |
-| 7–8 | 6+ weeks, or genuine unknowns: undocumented legacy, hard performance targets, multi-platform, heavy compliance (PII, payments, health) |
+| 1–3 | A few days of effort. Bug fix, single integration, small feature on an existing app |
+| 4–6 | A few weeks of effort. A defined app or API build, known stack, clear spec |
+| 7–8 | Multi-month effort, or genuine unknowns: undocumented legacy, hard performance targets, multi-platform, heavy compliance (PII, payments, health) |
 | 9–10 | Research-grade, or scope that can't be bounded from the post |
 
 Difficulty is **not** a penalty. Report it so the estimate is honest. In `overall` it is mildly negative only past 7.

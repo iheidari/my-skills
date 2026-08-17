@@ -44,4 +44,5 @@ Sort by `overall` descending. One line of justification per job, naming the actu
 - **Never re-report a seen id**, even if it now looks better. If a genuinely strong job was seen before, mention it in one line outside the table.
 - **Write the ledger even on a thin run.** Two new jobs is a valid result; padding the list with stale or off-stack jobs is not.
 - **Scoring alone is not a verdict.** A high `overall` is a candidate for `upwork-application`, which owns the APPLY / SKIP decision.
-- Full profile, hard disqualifiers, and the meetings/hours constraint live in the `upwork-application` skill — that is the source of truth for fit. [SCORING.md](SCORING.md) carries only the compact version.
+- **Weekly hours are not a filter.** `30+ hrs/week` does not disqualify a job here; only employment-shaped work does (see [SCORING.md](SCORING.md) § Prefilter).
+- Full profile and hard disqualifiers live in the `upwork-application` skill — that is the source of truth for fit. [SCORING.md](SCORING.md) carries only the compact version.
