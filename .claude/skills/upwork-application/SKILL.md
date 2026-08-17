@@ -27,7 +27,7 @@ If the posting is missing information needed to judge (no budget, no scope), say
 - **Positioning:** Senior full-stack engineer building web, mobile, and desktop applications end to end — not an automation or no-code freelancer
 - **Upwork status:** new to the platform, no reviews yet. Handle this honestly and directly; it converts better than hiding it
 - **Rate:** ~$82.50/hr displayed; prefers fixed-price
-- **Capacity:** ~20 hrs/week currently
+- **Capacity:** no weekly hours cap — judge a job on its scope, not on hours per week
 
 ### Core stack
 
@@ -66,7 +66,7 @@ Use the descriptors — "a top-5 North American dating app", "a top-5 US grocery
 
 This makes hourly Upwork contracts a genuine risk, because they run through the Work Diary — Upwork's time tracker that periodically screenshots the freelancer's screen. Fixed-price contracts avoid it entirely.
 
-Any posting that reads like a part-time or full-time role is a SKIP regardless of how good the money or the tech match looks.
+Any posting that reads like a role rather than a project is a SKIP regardless of how good the money or the tech match looks. **Weekly hours are not the test** — "30+ hrs/week" on a well-scoped build is fine. What disqualifies is employment shape: no deliverable, standups, set hours, being embedded in a team.
 
 ---
 
@@ -76,7 +76,6 @@ Work through the four gates in order. A single hard disqualifier means SKIP — 
 
 ### Gate 1 — Hard disqualifiers (any one of these = SKIP)
 
-- "30+ hrs/week", "40 hrs/week", "full-time", "part-time"
 - "ongoing", "long-term contract" with no defined deliverable
 - "join our team", "become part of our team", "contract-to-hire", "potential to convert"
 - Required attendance at daily standups, sprint ceremonies, or recurring team meetings
@@ -106,7 +105,7 @@ Work through the four gates in order. A single hard disqualifier means SKIP — 
 ### Gate 3 — Caution signals (note them, don't necessarily skip)
 
 - Vague scope on an otherwise good project — flag that scoping is the first conversation
-- Estimated duration over 8 weeks — his capacity is ~10 hrs/week, so check feasibility
+- Estimated duration over 8 weeks — check the scope is really bounded, not that it's a role in disguise
 - Many stakeholders mentioned, which usually means meetings
 - Budget stated as a range with a low floor
 - Client is new to Upwork with no history but the post itself is well-written
@@ -197,7 +196,7 @@ Mention the relevant case study fast and low-key, as though it's routine. Unders
 **4. Solve their problem, live (90–120 sec) — this is the whole video**
 Hyper-specific. Sketch the architecture, map the data flow, name the actual technical decisions, walk through build order. Show a real thing on screen where possible — a diagram, a schema, an existing app of his, a code sketch.
 
-**Cap preparation at 15–20 minutes.** The source program suggests building a free MVP, which is fine for a no-code freelancer and wrong for a senior engineer with 10 hours a week. An architecture sketch from someone who has shipped at scale is more persuasive than a rushed prototype, and it doesn't teach the client that he works free.
+**Cap preparation at 15–20 minutes.** The source program suggests building a free MVP, which is fine for a no-code freelancer and wrong for a senior engineer billing $82/hr. An architecture sketch from someone who has shipped at scale is more persuasive than a rushed prototype, and it doesn't teach the client that he works free.
 
 **5. Close assuming the job is won (~20 sec)**
 Frame the next step and give a clear call to action: *"If you want to talk it through, message me a couple of times that work this week and we'll set something up."*
