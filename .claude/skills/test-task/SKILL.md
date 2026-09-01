@@ -2,6 +2,8 @@
 name: test-task
 description: Test a pull request against its own "How to test" steps. Resolves the PR (a number/URL, the current branch's PR, or — on main — the next open one), checks it out, resolves conflicts, reads the linked Linear ticket for intent, then runs every check it can automate and fixes what fails — stopping to ask before any fix that would change product behavior. Commits and pushes its fixes, then reports what passed, what it fixed, what needs a decision, and what you must verify by hand, ending with the PR and ticket links. Use when the user runs /test-task [PR], or says "test this PR", "test the task", or "run the how-to-test steps".
 disable-model-invocation: true
+model: opus
+effort: medium
 ---
 
 # Test Task
