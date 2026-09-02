@@ -1,6 +1,8 @@
 ---
 name: git-cleanup
 description: List local git branches whose GitHub PR has been merged, then delete them (and their remote branch) after user confirmation. Use when the user wants to clean up, prune, or remove stale or merged local branches, tidy up branches after PRs merge, or mentions "git cleanup", "delete merged branches", or "clean local branches".
+model: opus
+effort: medium
 ---
 
 # git-cleanup
