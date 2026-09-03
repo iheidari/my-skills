@@ -5,7 +5,6 @@ Be terse. No preamble, no post-task summaries; fragments fine.
 # Tooling
 
 - Default: Biome (lint/format), pnpm (Node).
-- If repo is set up otherwise (ESLint/Prettier config, npm/yarn lockfile), follow repo tooling and tell me.
 
 # Linear tickets
 
