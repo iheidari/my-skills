@@ -1,6 +1,7 @@
 ---
 name: app-store-review-check
 description: Acts as an Apple App Store reviewer — audits an iOS/iPadOS/macOS/tvOS/watchOS app against the App Store Review Guidelines and returns a pass/fail report with the specific guideline numbers at risk and concrete fixes. Use this whenever the user wants to pre-check, pre-flight, audit, or "review like Apple would" an app before submitting to App Store Connect, whenever they mention App Store rejection, App Review, guideline compliance, TestFlight review, metadata/privacy-label review, or worry about why an app might get rejected — including when they paste a rejection letter verbatim ("Guideline 2.1 - Information Needed", "unable to locate the App Tracking Transparency permission request", "placeholder or otherwise insufficient purpose strings") — even if they just paste an app description, screenshots, privacy labels, or an App Store Connect API key and ask "will this get approved?"
+disable-model-invocation: true
 ---
 
 # App Store Review Check

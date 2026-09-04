@@ -1,6 +1,7 @@
 ---
 name: google-play-review-check
 description: Acts as a Google Play reviewer — audits an Android app against the Google Play Developer Program Policies and returns a pass/fail report with the specific policy names at risk and concrete fixes. Use this whenever the user wants to pre-check, pre-flight, audit, or "review like Google would" an Android/Play app before submitting to the Play Console, whenever they mention Google Play rejection, app suspension/removal, policy compliance, closed/open testing review, Data safety form review, permissions declaration, target API level, or worry about why an app might get rejected — even if they just paste a store listing, screenshots, the AndroidManifest, Data safety answers, or an app bundle and ask "will this get approved?"
+disable-model-invocation: true
 ---
 
 # Google Play Review Check
