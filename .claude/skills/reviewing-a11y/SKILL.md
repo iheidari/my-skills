@@ -7,136 +7,59 @@ allowed-tools: Read, Grep, Glob, WebFetch, Task
 
 # Accessibility Review
 
-Identify what the user wants reviewed, then perform the accessibility review by following the corresponding reference guide.
+Review against WCAG 2.2 and the WAI-ARIA APG. Every finding rests on **evidence** you actually observed; everything you could not observe is named as unverified rather than guessed at.
 
-## Step 1: Identify Review Target
+## Step 1: Pick the guide
 
-Analyze the user's request to determine the review target:
+One target, one guide. Read it before reviewing.
 
-### Web Page (Live URL)
-**Indicators:**
-- User provides a URL starting with `http://` or `https://`
-- User says "check this page", "review this site", "test this URL"
-- User wants to review a deployed/live website
+| Target | Guide |
+|---|---|
+| Live URL | [`references/page-review.md`](references/page-review.md) |
+| Source files, components, templates | [`references/code-review.md`](references/code-review.md) |
+| Figma URL, mockup image, PDF, design spec | [`references/design-review.md`](references/design-review.md) |
 
-**Action:** Follow the page review guide
+When the target is ambiguous, ask which of the three the user means. When the user names several targets, run each guide in turn and merge the findings into one report.
 
-### Code Implementation
-**Indicators:**
-- User provides file paths (`.jsx`, `.tsx`, `.vue`, `.html`, `.js`, etc.)
-- User says "review this component", "check my code", "look at this implementation"
-- User mentions specific files or directories in the codebase
-- User asks about static code analysis
+## Step 2: Gather evidence and review
 
-**Action:** Follow the code review guide
+Follow the guide. It tells you how to reach the target and what that medium exposes.
 
-### Design Mockup/Specification
-**Indicators:**
-- User provides Figma URL (figma.com/file/...)
-- User shares image files (.png, .jpg, .pdf of designs)
-- User says "review this design", "check this mockup", "look at this wireframe"
-- User asks about design specifications or visual accessibility
+Done when every element in scope is accounted for — cited in a finding, named as a good practice, or listed for manual verification. Cover interactive elements, images, form fields, headings and landmarks, and each state the target defines (focus, error, disabled, expanded).
 
-**Action:** Follow the design review guide
+## Severity
 
-### Ambiguous Cases
-If unclear, ask the user:
+- **Critical** — blocks access outright: no keyboard path, missing accessible name on a control, broken ARIA ID reference, color-only error state.
+- **Major** — reachable but a real barrier: low contrast, `div` with `onClick`, wrong role, broken heading hierarchy, icon-only control.
+- **Minor** — works, could be better: redundant ARIA, sub-optimal element choice, line height under 1.5.
+
+## Report shape
+
+Open with scope: what you reviewed, and how you reached it (accessibility tree, HTML source, file read, Figma fetch). Name what the medium hid from you.
+
+Then good practices, then findings ordered Critical → Major → Minor, each as:
+
 ```
-I can review accessibility for:
-1. **Live web pages** (provide URL) - I'll test the rendered page
-2. **Code implementation** (provide file paths) - I'll analyze the source code
-3. **Design mockups** (provide Figma URL or images) - I'll review visual designs
-
-Which would you like me to review?
+- **Location**: file:line, CSS selector, or frame name
+- **Evidence**: the code, attribute, or measurement observed
+- **Issue**: what is wrong
+- **WCAG**: 2.1.1 Keyboard (A)
+- **Impact**: who is affected and how
+- **Fix**: the corrected code or concrete change
 ```
 
-## Step 2: Load the Guide and Review
+Close with **Manual verification**: every check the medium could not settle, as a list a human can work through — exact contrast ratios, full keyboard flows, live-region announcements, focus movement across dynamic interactions.
 
-Once you identify the target, read the reference guide and execute its process directly.
+## Principles
 
-### For Web Pages
-```
-Read the page review guide: references/page-review.md
-Follow the guide using available web retrieval (WebFetch) or user-provided content.
-```
+- Cite the artifact: file paths with line numbers, CSS selectors, frame names, hex values.
+- Give the fixed code, not the instruction to fix.
+- Defer to the HTML Standard, WCAG 2.2, and the ARIA APG over invention.
+- No ARIA beats bad ARIA: flag ARIA that overrides working native semantics.
+- A check the medium could not settle belongs in Manual verification, at any severity.
 
-### For Code
-```
-Read the code review guide: references/code-review.md
-Follow the guide by inspecting the target files and related implementation.
-```
+## Standards
 
-### For Designs
-```
-Read the design review guide: references/design-review.md
-Follow the guide using available image, document, or Figma retrieval capabilities.
-```
-
-### When to Use Sub-agents
-
-- Use sub-agents only when the user explicitly requests parallel review, specialist delegation, or division across multiple targets.
-- Assign one target type to each agent and provide the relevant guide and target.
-- Wait for every result, remove duplicates, and return one consolidated report.
-- If sub-agents are unavailable, review the targets sequentially in this agent.
-
-## Step 3: Return Results
-
-When the review completes:
-1. Present the findings to the user
-2. Offer to review additional targets if needed
-3. Suggest next steps (e.g., "Would you like me to review the code implementation next?")
-
-## Important Notes
-
-- **Always read the appropriate guide before starting the review**
-- **Distinguish evidence from gaps** and state what could not be verified
-- **Don't mix review types** - use one guide per target type
-
-## Example Workflows
-
-### Example 1: User provides URL
-```
-User: "Review https://example.com for accessibility"
-
-1. Identify: This is a web page (URL provided)
-2. Read: references/page-review.md
-3. Execute: Inspect the page by following the guide
-4. Return: Present findings
-```
-
-### Example 2: User provides file path
-```
-User: "Check src/components/Button.tsx for a11y issues"
-
-1. Identify: This is code (file path provided)
-2. Read: references/code-review.md
-3. Execute: Inspect the target and related code by following the guide
-4. Return: Present findings
-```
-
-### Example 3: User provides Figma URL
-```
-User: "Review this design: https://figma.com/file/abc123"
-
-1. Identify: This is a design (Figma URL)
-2. Read: references/design-review.md
-3. Execute: Inspect the design by following the guide
-4. Return: Present findings
-```
-
-## WCAG & Standards Reference
-
-All reviews should reference:
-- **WCAG 2.2**: https://www.w3.org/TR/WCAG22/
-- **WAI-ARIA APG**: https://www.w3.org/WAI/ARIA/apg/
-- **WCAG Quick Reference**: https://www.w3.org/WAI/WCAG22/quickref/
-
-Common success criteria to reference:
-- 1.1.1 Non-text Content (A)
-- 1.3.1 Info and Relationships (A)
-- 1.4.3 Contrast (Minimum) (AA)
-- 2.1.1 Keyboard (A)
-- 2.4.6 Headings and Labels (AA)
-- 4.1.2 Name, Role, Value (A)
-
-Do not turn missing evidence into a conclusive finding. List unsupported checks as manual verification.
+- WCAG 2.2: https://www.w3.org/TR/WCAG22/
+- WCAG quick reference: https://www.w3.org/WAI/WCAG22/quickref/
+- WAI-ARIA APG: https://www.w3.org/WAI/ARIA/apg/
