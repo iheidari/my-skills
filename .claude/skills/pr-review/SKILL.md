@@ -1,12 +1,12 @@
 ---
-name: review-pr
+name: pr-review
 description: Test a PR against its ticket's acceptance criteria, fix what fails, push, and report what's left.
 disable-model-invocation: true
 model: opus
 effort: medium
 ---
 
-# Review PR
+# PR Review
 
 Take a pull request from wherever it is to **green**: test it against its ticket's
 **acceptance criteria**, fix every automated failure, push the fixes, and hand the user a
@@ -17,7 +17,7 @@ The run is autonomous. It pauses for exactly two things: **uncommitted changes**
 current tree (Step 2), and an **Ask first** item — a fix that would change what the product
 does (Step 5). Everything else proceeds without confirmation.
 
-Argument: a PR number (`/review-pr 46`), a PR URL, or empty. Requires `gh`.
+Argument: a PR number (`/pr-review 46`), a PR URL, or empty. Requires `gh`.
 
 ## 1. Resolve the PR
 
