@@ -1,7 +1,6 @@
 ---
 name: create-pr
 description: Review the branch, simplify it, run the repo's checks, then commit, push, and open a pull request.
-disable-model-invocation: true
 ---
 
 # Create PR

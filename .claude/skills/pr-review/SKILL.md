@@ -1,9 +1,6 @@
 ---
 name: pr-review
 description: Test a PR against its ticket's acceptance criteria, fix what fails, push, and report what's left.
-disable-model-invocation: true
-model: opus
-effort: medium
 ---
 
 # PR Review

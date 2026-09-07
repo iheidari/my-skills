@@ -1,7 +1,6 @@
 ---
 name: implement
 description: "Implement a piece of work based on a spec or set of tickets."
-disable-model-invocation: true
 ---
 
 Implement the work described by the user in the spec or tickets. Run every step below in order.
@@ -30,7 +29,7 @@ Run typechecking regularly, single test files regularly, and the full test suite
 
 ## 4. Review with thermos, then fix
 
-Invoke the `thermos` skill, scoped to this branch's diff, and work its synthesized findings:
+Invoke the `thermos:thermos` skill, scoped to this branch's diff, and work its synthesized findings:
 
 - Fix **every P0 and P1**.
 - Fix the **P2s that are easy**; record the rest with a one-line reason.
