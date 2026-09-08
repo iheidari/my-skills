@@ -1,30 +1,33 @@
 ---
 name: create-pr
-description: Review the branch, simplify it, run the repo's checks, then commit, push, and open a pull request.
+description: Review the branch, simplify it, run the repo's checks, then commit, push, open a pull request, and move the Linear ticket to In Review.
 ---
 
 # Create PR
 
-Run the four steps below in order. Invoking the skill is itself the approval for the whole
+Run the five steps below in order. Invoking the skill is itself the approval for the whole
 pipeline: run every step and open the PR without asking. Skip a step only when the invocation
 names it (`/create-pr no review`, `no simplify`, `skip tests`) — skip exactly that step, silently, and run
 the rest.
 
-Requires the `gh` CLI.
+Requires the `gh` and `linearis` CLIs.
 
-## 1. Review
+## 1. Review with thermos, then fix
 
-Invoke the `code-review-matt` skill via the Skill tool, with the merge-base against the default
-branch (`main`/`master`) as the fixed point — pass it so the skill doesn't stop to ask. If the
-branch *is* the default branch, use the fixed point that covers the uncommitted and unpushed
-work (`@{upstream}`, else `HEAD~1`).
+Invoke the `thermos:thermos` skill via the Skill tool, scoped to this branch's diff against the
+default branch (`main`/`master`) merge-base — pass the fixed point so the skill doesn't stop to
+ask. If the branch *is* the default branch, use the fixed point that covers the uncommitted and
+unpushed work (`@{upstream}`, else `HEAD~1`).
 
-Fix every **blocker** it reports: a hard violation of a documented repo standard, or a spec
-finding of the missing / wrong-implementation kind. Judgement calls (baseline smells, scope-creep
-notes) are not blockers — leave those to step 2 or mention them in the PR body.
+Work its synthesized findings:
 
-Done when the review has run and every blocker is fixed in the working tree. Re-run the review
-only if a fix was large enough to plausibly introduce new blockers.
+- Fix **every P0 and P1**.
+- Fix the **P2s that are easy**; record the rest with a one-line reason, and mention them in the
+  PR body.
+- Apply the **cleanups** the review suggests while you are in there.
+
+Done when no P0/P1 remains. Re-run the review only if a fix was large enough to plausibly
+introduce new findings.
 
 ## 2. Simplify
 
@@ -57,3 +60,15 @@ the formatter until the run is green.
 3. Commit, push with `-u`, `gh pr create`.
 
 Done when `gh pr create` returns a URL. Report that URL.
+
+## 5. Move the ticket to In Review
+
+Find the Linear ticket the branch is for: the `0XC-NNN`-style identifier in the branch name, the
+commit messages, or the PR title. If there is no identifier anywhere, skip this step and say so.
+
+Move it with `linearis issues update <id> --status "In Review"`.
+
+This step is not optional and has no "no ticket move" opt-out — without it the ticket sits in
+In Progress forever, because merging the PR only moves it In Review → Done.
+
+Done when the ticket reads In Review. Report the identifier alongside the PR URL.

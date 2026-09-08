@@ -25,18 +25,8 @@ Skip this step when there is no ticket; report but don't block if either update 
 
 Use /tdd where possible, at pre-agreed seams.
 
-Run typechecking regularly, single test files regularly, and the full test suite once at the end — all green before step 4.
+Run typechecking regularly, single test files regularly, and the full test suite once at the end — all green before you commit.
 
-## 4. Review with thermos, then fix
+## 4. Commit
 
-Invoke the `thermos:thermos` skill, scoped to this branch's diff, and work its synthesized findings:
-
-- Fix **every P0 and P1**.
-- Fix the **P2s that are easy**; record the rest with a one-line reason.
-- Apply the **cleanups** the review suggests while you are in there.
-
-Re-run typecheck, lint, and the full test suite after fixing. Done when no P0/P1 remains and the suite is green.
-
-## 5. Commit
-
-Commit to the current branch, and report what you fixed versus deferred.
+Commit to the current branch, and report what you built. Review happens in `/create-pr`, not here.
