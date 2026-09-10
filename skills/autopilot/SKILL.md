@@ -25,7 +25,7 @@ the working tree is clean. A dirty tree stops the run.
 The run needs `implement`, `create-pr`, `pr-review`, and their dependencies — `thermos`,
 `thermo-nuclear-review`, `thermo-nuclear-code-quality-review`, `code-review-matt`, `simplify`,
 `tdd`, `resolving-merge-conflicts`. Clone https://github.com/iheidari/my-skills to a temp
-directory and copy any missing skill folder from its `.claude/skills/` into this repo's
+directory and copy any missing skill folder from its `skills/` into this repo's
 `.claude/skills/`.
 
 Those copies are **borrowed**: they serve this session only, and every commit the run makes
