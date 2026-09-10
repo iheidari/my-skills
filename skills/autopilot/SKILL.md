@@ -22,25 +22,6 @@ Three guardrails, each stated as the behaviour that satisfies it:
 Check out the default branch (`main`/`master`), `git fetch && git pull --ff-only`, and confirm
 the working tree is clean. A dirty tree stops the run.
 
-The run needs `implement`, `create-pr`, `pr-review`, and their dependencies — `thermos`,
-`thermo-nuclear-review`, `thermo-nuclear-code-quality-review`, `code-review-matt`, `simplify`,
-`tdd`, `resolving-merge-conflicts`. Clone https://github.com/iheidari/my-skills to a temp
-directory and copy any missing skill folder from its `skills/` into this repo's
-`.claude/skills/`.
-
-Those copies are **borrowed**: they serve this session only, and every commit the run makes
-stays free of them. Keep the list of what you borrowed, and exclude the folders with the file
-tools rather than shell redirection:
-
-- Read `.git/info/exclude` (create it with Write if absent).
-- Append a `.claude/skills/<name>/` line per borrowed folder with Edit, preserving every line
-  already in the file.
-- Run `git status --short` on its own. Borrowed paths absent means the exclusion took; still
-  listed means stop and report, before anything borrowed reaches a commit.
-
-**Done when** the tree is clean, every skill above resolves, and `git status --short` lists no
-borrowed path.
-
 ## 1. Implement
 
 **Ticket argument** (`/autopilot 0XC-123`): that ticket is the target — skip the Linear query
