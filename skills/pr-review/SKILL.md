@@ -1,6 +1,6 @@
 ---
 name: pr-review
-description: Test a PR against its ticket's acceptance criteria, fix what fails, push, and report what's left.
+description: Test a PR against its ticket's acceptance criteria, fix what fails, push, and report what's left in the terminal and as a PR comment.
 ---
 
 # PR Review
@@ -8,7 +8,7 @@ description: Test a PR against its ticket's acceptance criteria, fix what fails,
 Take a pull request from wherever it is to **green**: test it against its ticket's
 **acceptance criteria**, fix every automated failure, push the fixes, and hand the user a
 checklist of what's confirmed, what you fixed, what needs their call, and what still needs a
-human.
+human. The same checklist is posted to the PR as a comment.
 
 The run is autonomous. It pauses for exactly two things: **uncommitted changes** in the
 current tree (Step 2), and an **Ask first** item — a fix that would change what the product
@@ -189,8 +189,32 @@ run, say plainly that everything passed and nothing was pushed.
 **The links block is always last**, on every run, as bare clickable URLs. With no ticket,
 print the PR line and note that none is linked.
 
+**Take the ticket URL from what you actually read.** `linearis issues read` omits `url`, so
+don't build one from a guessed workspace slug. Use the Linear MCP `get_issue`, or the Linear
+bot's link in the PR comments (`gh api repos/<owner>/<repo>/issues/<n>/comments`). If neither
+gives you a URL, print the id without a link.
+
+## 9. Post the report to the PR
+
+Post the Step 8 report as a PR comment on every run, without asking. Invoking the skill is
+the approval. Post only after Step 7's push has settled, so the shas in the comment exist on
+the remote.
+
+`gh pr comment <n> --body-file -` with a heredoc. Adapt the report for a reader on GitHub
+rather than the user in the terminal:
+
+- **Title the decisions section "Needs a decision"**, not "Needs your decision".
+- **Drop local paths.** Screenshot and `/tmp` paths mean nothing on GitHub, so write
+  "screenshot checked" instead. Attach images only if they were uploaded somewhere reachable.
+- **Leave out the PR link**, since the comment already sits on the PR. Keep the ticket link.
+- **End with the PR attribution line** from the system reminder, when there is one.
+
+Post one comment per run, and never edit or delete earlier ones; a re-run adds a fresh
+comment. If posting fails (no permission, a fork), report the failure and keep the terminal
+report. Print the comment URL `gh` returns beneath the links block.
+
 ## Guardrails
 
 This skill tests; it doesn't decide. A rejected push is reported, never forced. The PR is
-never merged, closed, approved, or sent a review. A check is reported as passing only when
-you watched it run to completion.
+never merged, closed, approved, or sent a review; the Step 9 comment is the only thing it
+posts. A check is reported as passing only when you watched it run to completion.

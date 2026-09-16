@@ -50,16 +50,26 @@ it as missing and move on. Sweep the whole repo for test suites — workspace pa
 E2E runners (Playwright, Cypress) with their own scripts or configs — rather than stopping at
 the root `test` script.
 
-Done when every check that exists is green and every test suite you found has run. A failure is yours to fix: repair it and re-run from
-the formatter until the run is green.
+Then run the CI pipeline locally. Read every workflow that triggers on a pull request
+(`.github/workflows/*.yml`, or the repo's CI config) and run each job's steps as CI runs
+them. That includes steps that discover their own commands, like a loop over every `check:*`
+script: run the whole set, not just the ones that match what you touched. Mirror CI's inputs,
+such as its changed-files base. Where a step can't run locally (it needs secrets, or it deploys),
+name it and why.
+
+Done when every check that exists is green, every test suite you found has run, and every local
+CI step passes. A failure is yours to fix: repair it and re-run from the formatter until the
+run is green.
 
 ## 4. Open the PR
 
 1. On the default branch (`main`/`master`), cut a feature branch first.
 2. Stage the changes; write a commit message and a PR title + body from the diff.
 3. Commit, push with `-u`, `gh pr create`.
+4. Watch the PR's CI with `gh pr checks <n> --watch`. If a job fails, read its log
+   (`gh run view <run-id> --log-failed`), fix it, re-run that step locally, then commit and push.
 
-Done when `gh pr create` returns a URL. Report that URL.
+Done when `gh pr create` has returned a URL and every CI check on the PR passes. Report that URL.
 
 ## 5. Move the ticket to In Review
 
