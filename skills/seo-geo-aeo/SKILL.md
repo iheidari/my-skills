@@ -5,6 +5,7 @@ description: >
   and AEO (featured snippets, voice search), then deliver a scored DOCX/PDF report.
   Use when the user gives a URL or domain and asks about search rankings, AI-search
   visibility, meta tags, schema markup, or asks to audit their site.
+disable-model-invocation: true
 ---
 
 # SEO / GEO / AEO audit

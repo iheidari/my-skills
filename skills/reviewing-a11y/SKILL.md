@@ -3,6 +3,7 @@ name: reviewing-a11y
 description: Review accessibility of web pages, code implementations, and design mockups, then report severity-ranked issues and fixes against WCAG 2.2 and WAI-ARIA. Use when asked to check, audit, or review a11y/accessibility of a URL, component/file, or Figma/design.
 argument-hint: URL, file path, or Figma URL to review
 allowed-tools: Read, Grep, Glob, WebFetch, Task
+disable-model-invocation: true
 ---
 
 # Accessibility Review
