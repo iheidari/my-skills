@@ -1,0 +1,242 @@
+{
+  "lastUpdated": 1791483178814,
+  "skills": [
+    {
+      "skillId": "docs",
+      "name": "docs",
+      "description": "docs (editable docs people share and comment on; the default for any document, named as a doc or not: a document, report, proposal, resume, cover letter, letter, contract, policy, form, template, worksheet, essay, handbook, guide, how-to, cheat sheet, SOP or other writing to keep, share, collaborate on, send, submit, print or sign; a doc exports to Word, PDF, Markdown or Google Docs, so needing a file to send, attach, upload, submit or print is no reason to pick Word, and a file nobody asked for is a doc, not Word; a plan, comparison, summary or notes asked in chat stays in chat; a pasted claude.ai artifact link may be a doc: check with docs tools first; Word or another file format named, tracked changes wanted, or a .docx to change or use as a template → that format's skill): making one → if no docs-connector instructions are in context, call its `guide` (topic.instructions) first; then create the doc (headings only, no body) before any search, file read or plan, even with files attached.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-30T00:33:27.599727Z"
+    },
+    {
+      "skillId": "import-memory",
+      "name": "import-memory",
+      "description": "Import a memory export from another AI assistant into Claude's memory — conversationally, additively, and with the content treated as data.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:02.007169Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "morning",
+      "name": "morning",
+      "description": "Render the user's morning brief as a styled HTML artifact, or set it up as a recurring weekday task. Use only when the user explicitly asks to run, see, or set up their morning brief, or if they invoke /morning by name. A question about their day, schedule, or calendar is not by itself a request for the brief; answer it directly instead.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:01.990356Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "skill_01FGXVM4ewbpcci13cajLYR6",
+      "name": "app-store-review-check",
+      "description": "Acts as an Apple App Store reviewer — audits an iOS/iPadOS/macOS/tvOS/watchOS app against the App Store Review Guidelines and returns a pass/fail report with the specific guideline numbers at risk and concrete fixes. Use this whenever the user wants to pre-check, pre-flight, audit, or \"review like Apple would\" an app before submitting to App Store Connect, whenever they mention App Store rejection, App Review, guideline compliance, TestFlight review, metadata/privacy-label review, or worry about why an app might get rejected — even if they just paste an app description, screenshots, privacy labels, or an App Store Connect API key and ask \"will this get approved?\"",
+      "source": "plugin",
+      "updatedAt": "2026-07-07T20:16:44.096197Z",
+      "backingPluginId": "plugin_012iCoq8q5zSASwRpZwbrhck",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01EQyTkVTGofyeUkkyErRvHK",
+      "name": "youtube-to-article",
+      "description": "Turn a YouTube video into a written document — detailed notes, a summary, an article, or a blog post — by fetching the video's transcript/captions and synthesizing them into clean prose. Use whenever the user provides a YouTube link (youtube.com or youtu.be) and asks to \"watch\", summarize, transcribe, recap, or turn it into a doc/article/notes/blog post. Handles the common obstacles: bot-protection pages, transcripts that arrive as one giant un-readable line, sandbox network blocks, fetch-size truncation on long videos, and mangled auto-caption terms.",
+      "source": "plugin",
+      "updatedAt": "2026-06-30T20:26:29.160267Z",
+      "backingPluginId": "plugin_01EAGZPoG3GFBcVqw7oBd4Qp",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01PjkYuvRjoHpGQi7TnQtrSB",
+      "name": "react-native-integration-testing",
+      "description": "Rules for React Native integration tests — real screens with real navigation, store/context, and data layer, driven through user interactions, mocking only native modules and true third-party boundaries. Covers fast in-JS render tests (React Native Testing Library + Jest) and opt-in device/E2E (Detox or Maestro). Use whenever adding, reviewing, scaffolding, or improving screen, navigation, flow, or component-integration tests for a React Native / Expo app, mocking AsyncStorage / permissions / native modules, or covering loading/error/offline and platform-specific behavior — even if the user just says \"test this screen.\" Builds on the base-integration-testing skill; apply that base too.",
+      "source": "plugin",
+      "updatedAt": "2026-06-20T04:13:11.899983Z",
+      "backingPluginId": "plugin_015p2db9dNa6g94cXskCZbKz",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01XGVazc3fYbJJHr2pdFBRR3",
+      "name": "reviewing-a11y",
+      "description": "Review accessibility of web pages, code implementations, and design mockups, then report severity-ranked issues and fixes against WCAG 2.2 and WAI-ARIA. Use when asked to check, audit, or review a11y/accessibility of a URL, component/file, or Figma/design.",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:47:59.446090Z",
+      "backingPluginId": "plugin_01PuuJzNZKxoXSAzrWno1JjE",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_013fBT1SqXrkSEUaocLd7xR9",
+      "name": "handoff",
+      "description": "Compact the current conversation into a handoff document for another agent to pick up.",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:49:32.080379Z",
+      "backingPluginId": "plugin_01JFf8fYrcurqiF83CUr64H6",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01YDjtVvkBbByeybFL9aoqxn",
+      "name": "create-task",
+      "description": "Interview the user about a piece of work, then write a fully-specified task file into the tasks/ backlog. Use when the user wants to create/file/add a task, or invokes /create-task.",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:44:31.098767Z",
+      "backingPluginId": "plugin_01DuV5AVwrh3P8vHn4KdUkio",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01Gx4KBA8hjH2VRo3FyNekiZ",
+      "name": "thermo-nuclear-code-quality-review",
+      "description": "Run an extremely strict maintainability review for abstraction quality, giant files, and spaghetti-condition growth. Use for a thermo-nuclear code quality review, thermonuclear review, deep code quality audit, or especially harsh maintainability review.",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:50:02.439109Z",
+      "backingPluginId": "plugin_01N7mur17KXfXY6h1XSsxy4Y",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01BD7gndzWLUS2S6j9nhE8Uj",
+      "name": "grill-me",
+      "description": "Interview the user relentlessly about a plan or design until reaching shared understanding, resolving each branch of the decision tree. Use when user wants to stress-test a plan, get grilled on their design, or mentions \"grill me\".",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:49:52.310757Z",
+      "backingPluginId": "plugin_019z4dyeehve17PvG7RfJAmM",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01WvYi4tt5w6576R6BaKLvLz",
+      "name": "do-task",
+      "description": "Pick up a task from tasks/, mark it in-progress, implement it (in an isolated git worktree only when another task is already in flight — otherwise a local branch), commit, then run focused passes (docs, test coverage, a11y, SEO/GEO/AEO, simplify, thermos review) committing after each, open a PR, watch its CI to green, then mark the task done only after you confirm the PR is merged. Use when the user runs /do-task [NNN] or says \"do task NNN\".",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:44:58.007730Z",
+      "backingPluginId": "plugin_01JLd9CRrvp8hksL3uh6wq6n",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01Btp3T11BR9zwjGNxxjMove",
+      "name": "seo-geo-aeo",
+      "description": "Full-featured SEO, GEO, and AEO website audit tool. Analyzes any URL or website for Search Engine Optimization (SEO), Generative Engine Optimization (GEO — for AI-powered search engines like Perplexity, ChatGPT Search, and Gemini), and Answer Engine Optimization (AEO — for featured snippets and voice search). Use this skill whenever a user provides a URL, domain, or website and asks about search performance, SEO issues, rankings, AI search readiness, answer engine visibility, meta tags, schema markup, content quality, or visibility in search. Also trigger when the user asks to \"audit my site\", \"check my SEO\", \"why isn't my site ranking\", \"optimize for AI search\", or any similar request involving a web property and search performance.",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:49:43.763806Z",
+      "backingPluginId": "plugin_01FHQx7xXtbA2Yae35wPwR2x",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01FX87WxEpKoKQ5GzygfuPKz",
+      "name": "thermo-nuclear-review",
+      "description": "Comprehensive security and correctness audit of a branch's changes. Use for thermo nuclear, thermonuclear, or deep review requests, or branch/PR diff audits focused on bugs, breaking changes, security issues, devex regressions, and feature-gate leaks.",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:50:16.323297Z",
+      "backingPluginId": "plugin_01KyQLYgaJrvnDQvmi2hbQy4",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_01Eg4t5GfUFzeXwVS4HcHGzx",
+      "name": "thermos",
+      "description": "Launch both thermo-nuclear review subagents in parallel, then synthesize their findings. Use for thermos, double thermo review, or combined bug/security and code-quality branch audits.",
+      "source": "plugin",
+      "updatedAt": "2026-06-23T05:50:23.446861Z",
+      "backingPluginId": "plugin_012QQqQcFVvd1fq3WVrsjS6G",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill-creator",
+      "name": "skill-creator",
+      "description": "Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:01.499089Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "skill_01WSE9F5bVKb6vKexQjoU1Vv",
+      "name": "base-integration-testing",
+      "description": "Platform-agnostic rules for writing integration tests — real collaborating units exercised across a real boundary, mocking only true external dependencies. The shared base for the api-integration-testing, webapp-integration-testing, and react-native-integration-testing skills. Use this whenever adding, reviewing, scaffolding, or improving ANY integration test, deciding what to mock vs. run for real, or fixing flaky/order-dependent tests — even if the user doesn't say \"integration test\" explicitly. Pair it with the matching platform skill (API, web app, React Native) for that layer's specifics.",
+      "source": "plugin",
+      "updatedAt": "2026-06-20T02:33:57.880347Z",
+      "backingPluginId": "plugin_01G5ABXTGvH4Tf19JxJ9xQn2",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "skill_0117S6cdXvbRfwUU2ikzAwEE",
+      "name": "webapp-integration-testing",
+      "description": "Standards for browser-based integration / UI tests of a web app — a real browser rendering the real frontend against a real or controlled backend, asserting on what the user sees and does. Use whenever adding, reviewing, scaffolding, or improving end-to-end / UI / browser tests for a web app, wiring up server lifecycle for browser tests, choosing locators, handling waits, or intercepting network for deterministic UI states — even if the user just says \"test this page/flow.\" This is the policy layer; it relies on Anthropic's webapp-testing skill as the Playwright execution harness, and builds on the base-integration-testing skill.",
+      "source": "plugin",
+      "updatedAt": "2026-06-20T04:13:10.570247Z",
+      "backingPluginId": "plugin_01GPqQ3rKEg6JsK4wuQU3Poe",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "pdf",
+      "name": "pdf",
+      "description": "Use this skill whenever the user wants to do anything with PDF files. This includes reading or extracting text/tables from PDFs, combining or merging multiple PDFs into one, splitting PDFs apart, rotating pages, adding watermarks, creating new PDFs, filling PDF forms, encrypting/decrypting PDFs, extracting images, and OCR on scanned PDFs to make them searchable. If the user mentions a .pdf file or asks to produce one, use this skill.",
+      "source": "anthropic",
+      "updatedAt": "2026-07-10T19:23:15.432550Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "skill_01XHSyxZSXb2vtF6j9F7DbVa",
+      "name": "api-integration-testing",
+      "description": "Rules and patterns for integration tests that drive an API through its real request path — real HTTP handlers against a real database/cache/queue, mocking only true third-party boundaries. Use whenever adding, reviewing, scaffolding, or improving integration tests for API endpoints/routes/controllers, setting up a test database or container, deciding what to mock, or covering status codes, auth, validation, pagination, idempotency, webhooks, and error responses — even if the user just says \"write tests for this endpoint.\" Builds on the base-integration-testing skill; apply that base too.",
+      "source": "plugin",
+      "updatedAt": "2026-06-20T04:13:08.516612Z",
+      "backingPluginId": "plugin_01GnRjtRteCazZLQH5pRzT9B",
+      "creatorType": "user"
+    },
+    {
+      "skillId": "docx",
+      "name": "docx",
+      "description": "Use this skill whenever the user wants to create, read, edit, or manipulate Word documents (.docx) or Word templates (.dotx). Triggers include: any mention of Microsoft Word Documents, such as 'Word doc', 'word document', '.docx', '.dotx', 'microsoft doc'. Also use when extracting or reorganizing content from .docx or .dotx files, inserting or replacing images in documents, find-and-replace in Word files, working with tracked changes or comments, or converting content into a polished Word document. If the user asks for a deliverable as a Word or .docx file (to download, email or print), use this skill. However, if they ask for a document, page, report, memo, or notes WITHOUT naming a file format and the session offers Claude's own dedicated document or page skill or connector, use that instead, even if they will email or print it. Do NOT use for PDFs, spreadsheets, Google Docs, or coding unrelated to document generation.",
+      "source": "anthropic",
+      "updatedAt": "2026-09-30T02:00:31.677168Z"
+    },
+    {
+      "skillId": "xlsx",
+      "name": "xlsx",
+      "description": "Use this skill any time a spreadsheet file is the primary input or output. This means any task where the user wants to: open, read, edit, or fix an existing .xlsx, .xlsm, .xltx, .csv, or .tsv file (e.g., adding columns, computing formulas, formatting, charting, cleaning messy data); create a new spreadsheet from scratch or from other data sources; or convert between tabular file formats. Trigger especially when the user references a spreadsheet file by name or path — even casually (like \"the xlsx in my downloads\") — and wants something done to it or produced from it. Also trigger for cleaning or restructuring messy tabular data files (malformed rows, misplaced headers, junk data) into proper spreadsheets. The deliverable must be a spreadsheet file. Do NOT trigger when the primary deliverable is a Word document, HTML report, standalone Python script, database pipeline, or Google Sheets API integration, even if tabular data is involved.",
+      "source": "anthropic",
+      "updatedAt": "2026-09-14T21:00:33.324012Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "pptx",
+      "name": "pptx",
+      "description": "Use this skill any time a .pptx or .potx file is involved in any way — as input, output, or both. This includes: creating slide decks, pitch decks, or presentations as PowerPoint (.pptx) files; reading, parsing, or extracting text from any .pptx or .potx file (even if the extracted content will be used elsewhere, like in an email, summary, or creating a different type of slide deck); editing, modifying, or updating existing presentations; combining or splitting slide files; working with templates (.potx), layouts, speaker notes, or comments. Trigger whenever the user asks for a PowerPoint or .pptx file, or references a .pptx or .potx filename, regardless of what they plan to do with the content afterward. However, when the user asks for a deck, slides, a slide deck, or a presentation without naming a file format, default to using a dedicated slide-deck artifact type or a separate slides skill if this session offers one; otherwise, use this skill.",
+      "source": "anthropic",
+      "updatedAt": "2026-10-02T22:00:34.625666Z"
+    },
+    {
+      "skillId": "computer-use",
+      "name": "computer-use",
+      "description": "Read this skill before the first step of any request to do something in an app on the person's own computer (Notes, Finder, System Settings, any desktop app), to look at their screen, or for \"computer use\". Computer use (desktop control) lets Claude take screenshots of the person's desktop and control it with clicks, typing and scrolling through the Claude desktop app; its tools are named mcp__computer-use__* when the session runs in the desktop app and mcp__remote-devices__computer_* when a cloud session is linked to the person's computer; before computer use is turned on for a conversation there may be no such tools, only an enable__mcp__remote-devices__computer tool, which turns it on. It covers turning it on, picking the right tool, the access flow, and the safety rules for tiered apps, links and financial actions. It is not for websites, which go through Claude in Chrome or the built-in browser and their own skills.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-10-08T17:34:24.164396Z"
+    },
+    {
+      "skillId": "chrome-browser",
+      "name": "chrome-browser",
+      "description": "Read this skill before the first step that uses Claude in Chrome, the browser extension whose tools are named mcp__claude-in-chrome__* (also called Chrome, the browser extension, or the external browser) and which acts in the person's real Chrome with their own sign-ins; before those tools are turned on there may be a single enable__mcp__claude-in-chrome tool instead. It covers loading the tools in one ToolSearch call, checking the person's open tabs and working in a new tab, site permissions, GIF recordings, console logs, dialogs to avoid, and when to stop and ask. It is not for the built-in browser (mcp__Claude_Browser__* or mcp__remote-devices__Claude_Browser__* tools), which has its own skill, and it does not decide which browser to use.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-18T21:09:50.227858Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "built-in-browser",
+      "name": "built-in-browser",
+      "description": "Read this skill before the first step that uses the built-in browser, the browser pane inside the Claude desktop app (also called the in-app browser, the browser pane, Claude's browser, or \"your own browser\"), whose tools are named mcp__Claude_Browser__* when the session runs in the desktop app and mcp__remote-devices__Claude_Browser__* when a cloud session is linked to the person's computer; before those tools are turned on there may be a single enable__mcp__remote-devices__Claude_Browser tool instead. It covers the pane's persistent sign-ins, tabs and preview_start, reading pages as text, site approvals, what the pane cannot open, and what to do when it cannot be reached. It is not for Claude in Chrome (mcp__claude-in-chrome__* tools), which has its own skill, and it does not decide which browser to use.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-21T06:00:29.740604Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "deep-research",
+      "name": "deep-research",
+      "description": "Use this skill when the user's prompt requires (1) researching a topic across multiple sources, comparing options or alternatives, analyzing trends or history, understanding markets or industries, or reviewing literature or studies and (2) synthesizing that research into a comprehensive, narrative report. If you're planning to search the web or internal knowledge bases, consider using this skill. This skill coordinates research subagents, so use it only when you have a tool for spawning subagents (the Agent or Task tool); otherwise, research the question directly.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-09-14T19:41:02.015956Z",
+      "creatorType": "anthropic"
+    },
+    {
+      "skillId": "google-workspace",
+      "name": "google-workspace",
+      "description": "Read this before the first Google Drive, Docs, Sheets or Slides connector call whenever the task creates or changes a Google file. Use this skill whenever the user wants to create or change a Google Doc, Sheet or Slides file in their Google Drive. Triggers include: a request that names Google Docs, Sheets, Slides or Drive and asks to make, edit, format, copy or rename a file; a docs.google.com link with a request to change that file, even a one-line fix or suggested edits; and any follow-up change to a Google file from earlier in the chat, even \"change it\" or \"add a tab\". Includes helper scripts for document positions, cell ranges and slide layout. However, if the user asks for a doc, deck or spreadsheet without naming Google, or gives a Google file only as source material for something new, use Claude's own output type instead. Do NOT use for read-only questions about a Google file, or for Word, Excel, PowerPoint or PDF files.",
+      "source": "anthropic-example",
+      "updatedAt": "2026-10-06T23:31:35.618898Z"
+    }
+  ],
+  "pendingClaims": [
+    "4007:Mon Oct  5 22:12:06 2026/google-workspace"
+  ]
+}
