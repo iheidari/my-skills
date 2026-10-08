@@ -22,6 +22,28 @@ Three guardrails, each stated as the behaviour that satisfies it:
 Check out the default branch (`main`/`master`), `git fetch && git pull --ff-only`, and confirm
 the working tree is clean. A dirty tree stops the run.
 
+The run needs `implement`, `create-pr`, `pr-review`, and the skills they read or invoke: `how`,
+`tdd`, `principle-model-the-domain`, `principle-fix-root-causes`, `principle-prove-it-works`,
+`thermos`, `thermo-nuclear-review`, `thermo-nuclear-code-quality-review`, `simplify`, and
+`resolving-merge-conflicts`. A skill already available — in this repo's `.claude/skills/` or
+`~/.claude/skills/` — needs nothing. For the rest, clone https://github.com/iheidari/my-skills
+to a temp directory and copy each missing skill folder into this repo's `.claude/skills/`: most
+live at `skills/<name>/`, the three thermos skills at `skills/thermos/skills/<name>/`. A skill
+that is neither available nor in the clone is noted in the final summary, not copied.
+
+Those copies are **borrowed**: they serve this session only, and every commit the run makes
+stays free of them. Keep the list of what you borrowed, and exclude the folders with the file
+tools rather than shell redirection:
+
+- Read `.git/info/exclude` (create it with Write if absent).
+- Append a `.claude/skills/<name>/` line per borrowed folder with Edit, preserving every line
+  already in the file.
+- Run `git status --short` on its own. Borrowed paths absent means the exclusion took; still
+  listed means stop and report, before anything borrowed reaches a commit.
+
+**Done when** the tree is clean, every skill above resolves or is noted, and `git status --short`
+lists no borrowed path.
+
 ## 1. Implement
 
 **Ticket argument** (`/autopilot 0XC-123`): that ticket is the target — skip the Linear query
