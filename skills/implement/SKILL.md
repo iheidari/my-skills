@@ -40,12 +40,60 @@ If the work has a Linear ticket, use `linearis` (fall back to the Linear MCP):
 
 Skip this step when there is no ticket; report but don't block if either update fails.
 
-## 3. Build
+Skills named in the steps below (`how`, `tdd`, `principle-*`) are marked user-invoked only, so
+**read** them rather than invoking them: open `<name>/SKILL.md` from `.claude/skills/` in the
+project, else `~/.claude/skills/`, and follow it.
 
-Use /tdd where possible, at pre-agreed seams.
+## 3. Understand and design
 
-Run typechecking regularly, single test files regularly, and the full test suite once at the end — all green before you commit.
+Size the work first. A change confined to one or two files whose shape is obvious from the
+ticket (copy, config, a small isolated fix) skips this step — say so in the report with a
+one-line reason. Everything else runs it before any test or code is written.
 
-## 4. Commit
+- **Understand.** Follow the `how` skill over the code the ticket touches, at its simple path
+  unless the change spans several modules or services.
+- **Name the data shape.** Write down the types or records the change adds or alters, and the
+  structure that organizes them, per `principle-model-the-domain`: a state machine over
+  scattered booleans, a table or registry over branching, a typed model over repeated shape
+  assumptions. The tests in Step 4 are written against this shape.
+- **Bug tickets: reproduce, then find the root cause**, per `principle-fix-root-causes`.
+  Reproduce the defect on the surface the ticket describes (the running app, the endpoint, the
+  CLI) before touching code; when it won't reproduce directly, instrument until it does. Trace
+  the symptom to its cause with runtime evidence, not a guess. If the bug cannot be reproduced,
+  stop and report what you tried — a fix for an unreproduced bug is a guess.
 
-Commit to the current branch, and report what you built — plus the worktree path, if you built in one. Review happens in `/create-pr`, not here.
+**Done when** the report can state the data shape (or the skip reason) and, for a bug, the
+repro and its root cause.
+
+## 4. Build
+
+Follow the `tdd` skill where possible, at the seams Step 3 named.
+
+For a bug, the first test reproduces it and fails for the root cause from Step 3. Commit that
+failing test on its own before the fix, so the history shows red, then green. If a pre-commit
+hook rejects a failing test, fold it into the fix commit instead and note that in the report —
+never bypass the hook.
+
+Run typechecking regularly, single test files regularly, and the full test suite once at the
+end — all green before the Step 6 commit. The bug's failing-test commit is the one deliberate
+exception.
+
+## 5. Prove it works
+
+Green tests are not proof. Per `principle-prove-it-works`, exercise the change on the real
+surface and read the actual result: start the app and drive the changed UI (Playwright or
+Chrome automation when the repo has it — screenshot it), call the changed endpoint, run the
+changed command. For a bug, re-run the Step 3 repro and confirm it no longer fires.
+
+When the surface needs something you don't have (a physical device, a real purchase,
+production data, a secret), name exactly what was missing in the report instead of claiming a
+pass. A failure here goes back to Step 4.
+
+**Done when** the report holds the evidence — the command and its output, or the screenshot —
+or names what blocked it.
+
+## 6. Commit
+
+Commit to the current branch, and report what you built — the data shape, the root cause for a
+bug, the Step 5 evidence, plus the worktree path, if you built in one. Review happens in
+`/create-pr`, not here.
